@@ -1,0 +1,38 @@
+<resources>
+
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
+        <item name="android:windowBackground">@drawable/gradient_color</item>
+        <item name="android:statusBarColor">#00000000</item>
+    </style>
+
+
+    <style name="LoginEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/rectangle_round_corners</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:elevation">12dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="paddingStart">20dp</item>
+    </style>
+
+    <style name="MainButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/rectangle_round_corners_gradient</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:elevation">12dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+</resources>

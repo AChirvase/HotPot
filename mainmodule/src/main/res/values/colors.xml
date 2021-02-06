@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffc529</color>
+    <color name="colorPrimaryLight">#fff861</color>
+    <color name="colorPrimaryDark">#c79500</color>
+    <color name="colorAccent">#fe724c</color>
+    <color name="windowBackground">#EEF0F2</color>
+    <color name="statusBarColor">#D3DBDF</color>
+    <color name="listItemBackground">#FEFEFE</color>
+    <color name="darkText">#272D2F</color>
+    <color name="lightText">#D7D7D7</color>
+</resources>

@@ -3,7 +3,7 @@
     package="com.alex.restaurantsmodule">
 
     <application>
-        <activity android:name="com.alex.restaurantsmodule.presentation.RestaurantsActivity" />
+        <activity android:name="com.alex.mainmodule.presentation.RestaurantsActivity" />
     </application>
 
 </manifest>
