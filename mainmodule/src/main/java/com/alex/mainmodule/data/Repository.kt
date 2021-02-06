@@ -9,10 +9,10 @@ import org.koin.core.KoinComponent
 class Repository(
     private val firebaseDataSource: FirebaseDataSource,
 ) : KoinComponent {
-
     fun addRestaurant(restaurant: Restaurant) = firebaseDataSource.addRestaurant(restaurant)
     fun getRestaurantsLiveData() = firebaseDataSource.getRestaurantsLiveData()
     fun addReview(review: Review, restaurant: Restaurant) =
         firebaseDataSource.addReview(review, restaurant)
+
 
 }

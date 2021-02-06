@@ -1,0 +1,162 @@
+package com.alex.mainmodule.presentation.fragments
+
+import android.graphics.Color
+import android.os.Bundle
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.alex.mainmodule.R
+import com.alex.mainmodule.domain.Restaurant
+import com.alex.mainmodule.presentation.MainActivityViewModel
+import com.alex.mainmodule.presentation.MainActivityViewState
+import kotlinx.android.synthetic.main.restaurants_list_fragment.*
+import kotlinx.android.synthetic.main.restaurants_list_item.view.*
+import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
+import me.saket.inboxrecyclerview.dimming.DimPainter
+import me.saket.inboxrecyclerview.page.PullToCollapseListener
+import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.core.KoinComponent
+
+class RestaurantsListFragment : Fragment(), KoinComponent {
+    private val viewModel: MainActivityViewModel by sharedViewModel()
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(
+            R.layout.restaurants_list_fragment,
+            container,
+            false
+        )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.viewState.observe(viewLifecycleOwner, {
+            if (it == MainActivityViewState.ViewRestaurant) {
+                restaurantsListRecyclerView.collapse()
+            }
+        })
+        setupExpandablePageLayout()
+        setupRecyclerView(setupAdapter())
+    }
+
+    private fun setupExpandablePageLayout() {
+        restaurantsExpandablePage.pullToCollapseThresholdDistance =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+                .toInt()
+        restaurantsExpandablePage.pullToCollapseListener.addOnPullListener(object :
+            PullToCollapseListener.OnPullListener {
+            override fun onPull(
+                deltaY: Float,
+                currentTranslationY: Float,
+                upwardPull: Boolean,
+                deltaUpwardPull: Boolean,
+                collapseEligible: Boolean
+            ) {
+                if (collapseEligible) {
+                    viewModel.onRestaurantCollapsed()
+                }
+            }
+
+            override fun onRelease(collapseEligible: Boolean) {
+                //NA
+            }
+        })
+    }
+
+    private fun setupRecyclerView(adapter: RestaurantsListAdapter) {
+        restaurantsListRecyclerView.layoutManager = LinearLayoutManager(context)
+        restaurantsListRecyclerView.expandablePage = restaurantsExpandablePage
+        restaurantsListRecyclerView.dimPainter = DimPainter.listAndPage(
+            listColor = Color.WHITE,
+            listAlpha = 0.75F,
+            pageColor = Color.WHITE,
+            pageAlpha = 0.65f
+        )
+        restaurantsListRecyclerView.itemExpandAnimator = ItemExpandAnimator.split()
+
+        restaurantsListRecyclerView.adapter = adapter
+    }
+
+    private fun setupAdapter(): RestaurantsListAdapter {
+        val restaurantsListAdapter = RestaurantsListAdapter()
+
+        viewModel.restaurantsListLiveData.observe(viewLifecycleOwner, {
+            restaurantsListAdapter.restaurantsList = it as ArrayList<Restaurant>
+            restaurantsListAdapter.notifyDataSetChanged()
+        })
+
+        restaurantsListAdapter.onItemClick = {
+            viewModel.goToViewRestaurant(it.first)
+            restaurantsListRecyclerView.expandItem(it.second)
+            expandRestaurantFragment()
+        }
+        restaurantsListRecyclerView.layoutManager = LinearLayoutManager(context)
+        restaurantsListRecyclerView.adapter = restaurantsListAdapter
+
+        return restaurantsListAdapter
+    }
+
+    private fun expandRestaurantFragment() {
+        var expandableFragment =
+            childFragmentManager.findFragmentById(restaurantsExpandablePage.id) as RestaurantFullDetailsFragment?
+        if (expandableFragment == null) {
+            expandableFragment = RestaurantFullDetailsFragment()
+        }
+
+        childFragmentManager
+            .beginTransaction()
+            .replace(restaurantsExpandablePage.id, expandableFragment)
+            .commitNowAllowingStateLoss()
+    }
+
+
+    class RestaurantsListAdapter
+        : RecyclerView.Adapter<RestaurantsListAdapter.ViewHolder>() {
+
+        var restaurantsList = ArrayList<Restaurant>()
+
+        //this is a callback
+        var onItemClick: ((Pair<Restaurant, Long>) -> Unit)? = null
+
+        init {
+            setHasStableIds(true)
+        }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.restaurants_list_item, viewGroup, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            viewHolder.restaurantName.text = restaurantsList[position].name
+        }
+
+        override fun getItemCount() = restaurantsList.size
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            var restaurantName: TextView = view.restaurantNameTv
+
+            init {
+                view.setOnClickListener {
+                    onItemClick?.invoke(
+                        Pair(
+                            restaurantsList[adapterPosition],
+                            getItemId(adapterPosition)
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+

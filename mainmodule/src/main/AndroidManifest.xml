@@ -18,7 +18,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".presentation.RestaurantsActivity"
+            android:name=".presentation.MainActivity"
             android:label="@string/app_name">
 
 

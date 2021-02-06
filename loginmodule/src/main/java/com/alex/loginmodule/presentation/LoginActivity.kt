@@ -10,7 +10,7 @@ import com.alex.loginmodule.presentation.fragments.SignUpFragment
 import com.alex.loginmodule.utils.Constants.GOOGLE_SIGN_IN
 import com.alex.loginmodule.utils.KoinModuleManager.loadKoinAntivirusModules
 import com.alex.loginmodule.utils.KoinModuleManager.unloadKoinAntivirusModules
-import com.alex.mainmodule.presentation.RestaurantsActivity
+import com.alex.mainmodule.presentation.MainActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.login_error, Toast.LENGTH_SHORT).show()
 
     private fun startRestaurantsActivity() {
-        intent = Intent(this, RestaurantsActivity::class.java)
+        intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 

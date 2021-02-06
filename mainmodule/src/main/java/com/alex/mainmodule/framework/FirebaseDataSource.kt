@@ -3,9 +3,7 @@ package com.alex.mainmodule.framework
 import androidx.lifecycle.LiveData
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kiwimob.firestore.livedata.livedata
@@ -18,9 +16,7 @@ interface FirebaseDataSource {
 }
 
 class FirebaseDataSourceImpl(
-    private val googleSignInClient: GoogleSignInClient,
-    private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ) : FirebaseDataSource {
 
     private val restaurantsReference = firestore.collection("restaurants")
