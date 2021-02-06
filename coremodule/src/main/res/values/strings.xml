@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">HotPot</string>
+    <!-- Strings related to login -->
+    <string name="email">Email</string>
+    <string name="user_name">Fullname</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Signup</string>
+    <string name="register_here">Don\'t have an account? <font color='red'>Register</font> </string>
+    <string name="login_here">Already a member? <font color='red'>Login</font> </string>
+    <string name="continue_with">Continue with</string>
+    <string name="email_error">Please provide an email address</string>
+    <string name="sign_up_error">Something went wrong.\nPlease try again later</string>
+    <string name="password_error">Please provide a password</string>
+    <string name="login_error">Email or password is incorrect</string>
+
+</resources>

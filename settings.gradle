@@ -1,2 +1,5 @@
-include ':app'
+include ':restaurantsmodule'
+include ':restaurantmodule'
+include ':coremodule'
+include ':app:coremodule'
 rootProject.name = "HotPot"
