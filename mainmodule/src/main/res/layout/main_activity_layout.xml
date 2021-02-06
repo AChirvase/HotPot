@@ -4,37 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_color"
     tools:context=".presentation.RestaurantsActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="20dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/mainActivityTitle"
+        <ImageView
+            android:id="@+id/accountIv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="Title" />
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_baseline_account_circle_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/mainActivitySubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:textSize="18sp"
-            tools:text="Subtitle" />
+        <EditText
+            android:id="@+id/searchEt"
+            style="@style/RoundEditText"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:hint="@string/search_restaurant_hint"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/accountIv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/orderBy"
+            style="@style/RoundEditText"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="4dp"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:hint="@string/search_restaurant_hint"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/accountIv"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/mainActivityFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchEt" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -43,8 +64,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/gradient_color"
-        android:backgroundTint="@android:color/transparent">
+        android:background="@android:color/white"
+        android:backgroundTint="@android:color/white"
+        app:fabCradleMargin="8dp"
+        app:fabCradleVerticalOffset="8dp">
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -52,10 +75,11 @@
         android:id="@+id/mainActivityFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/abc_vector_test"
+        android:src="@drawable/ic_baseline_account_circle_24"
         app:backgroundTint="@color/colorAccent"
         app:layout_anchor="@+id/bottomAppBar"
         app:layout_anchorGravity="end"
+        app:tint="@android:color/white"
         tools:ignore="ContentDescription" />
 
 

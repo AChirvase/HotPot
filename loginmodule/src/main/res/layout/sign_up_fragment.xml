@@ -9,7 +9,7 @@
 
     <EditText
         android:id="@+id/userNameEt"
-        style="@style/LoginEditText"
+        style="@style/RoundEditText"
         android:layout_marginTop="60dp"
         android:drawableStart="@drawable/ic_baseline_person_24"
         android:hint="@string/user_name"
@@ -20,7 +20,7 @@
 
     <EditText
         android:id="@+id/emailEt"
-        style="@style/LoginEditText"
+        style="@style/RoundEditText"
         android:layout_marginTop="16dp"
         android:drawableStart="@drawable/ic_baseline_email_24"
         android:hint="@string/email"
@@ -32,7 +32,7 @@
 
     <EditText
         android:id="@+id/passwordEt"
-        style="@style/LoginEditText"
+        style="@style/RoundEditText"
         android:layout_marginTop="16dp"
         android:drawableStart="@drawable/ic_baseline_key_24"
         android:hint="@string/password"
