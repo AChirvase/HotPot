@@ -1,15 +1,14 @@
 package com.alex.loginmodule.presentation
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.alex.loginmodule.R
 import com.alex.loginmodule.presentation.fragments.LoginFragment
 import com.alex.loginmodule.presentation.fragments.SignUpFragment
-import com.alex.loginmodule.utils.Constants.GOOGLE_SIGN_IN
-import com.alex.loginmodule.utils.KoinModuleManager.loadKoinAntivirusModules
-import com.alex.loginmodule.utils.KoinModuleManager.unloadKoinAntivirusModules
 import com.alex.mainmodule.presentation.MainActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -22,14 +21,8 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadKoinAntivirusModules()
         setContentView(R.layout.activity_login)
         subscribeForViewStateChange()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unloadKoinAntivirusModules()
     }
 
     override fun onStart() {
@@ -54,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
             LoginActivityViewState.LoginFailed -> showLoginFailedError()
             LoginActivityViewState.LoginSuccess -> startRestaurantsActivity()
             LoginActivityViewState.SignUpSuccess -> startRestaurantsActivity()
-            LoginActivityViewState.ExitApp -> finishAndRemoveTask()
+            LoginActivityViewState.ExitApp -> finishAffinity()
             else -> {
             }
         }
@@ -93,15 +86,13 @@ class LoginActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun startIntentSignInGoogle() =
-        startActivityForResult(viewModel.getGoogleSignInIntent(), GOOGLE_SIGN_IN)
+    private fun startIntentSignInGoogle() = resultLauncher.launch(viewModel.getGoogleSignInIntent())
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GOOGLE_SIGN_IN) {
-            viewModel.onGoogleSignInResult(data)
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.onGoogleSignInResult(result.data)
+            }
         }
-    }
 
 }

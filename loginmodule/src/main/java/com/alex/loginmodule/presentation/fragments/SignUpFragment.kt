@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.alex.loginmodule.R
+import com.alex.loginmodule.presentation.LoginActivityViewModel
+import com.alex.loginmodule.presentation.LoginActivityViewState
 import kotlinx.android.synthetic.main.sign_up_fragment.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
 class SignUpFragment : Fragment(), KoinComponent {
-    private val viewModel: com.alex.loginmodule.presentation.LoginActivityViewModel by sharedViewModel()
+    private val viewModel: LoginActivityViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +30,7 @@ class SignUpFragment : Fragment(), KoinComponent {
     }
 
     private fun subscribeForViewStateChange() {
-        viewModel.viewState.observe(this, { viewState -> updateViewState(viewState) })
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState -> updateViewState(viewState) })
     }
 
     private fun setupButtonsOnClick() {
@@ -49,12 +51,12 @@ class SignUpFragment : Fragment(), KoinComponent {
         }
     }
 
-    private fun updateViewState(viewState: com.alex.loginmodule.presentation.LoginActivityViewState) {
+    private fun updateViewState(viewState: LoginActivityViewState) {
         when (viewState) {
-            com.alex.loginmodule.presentation.LoginActivityViewState.SignUpWithUserAndPassword -> showProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.LoginFailed -> hideProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.LoginSuccess -> hideProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.SignUpFailed -> showSignUpFailedError()
+            LoginActivityViewState.SignUpWithUserAndPassword -> showProgressBar()
+            LoginActivityViewState.LoginFailed -> hideProgressBar()
+            LoginActivityViewState.LoginSuccess -> hideProgressBar()
+            LoginActivityViewState.SignUpFailed -> showSignUpFailedError()
             else -> {
             }
         }

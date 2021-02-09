@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:paddingTop="8dp">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/userImgContainer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:elevation="12dp"
+        app:cardCornerRadius="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/userImg"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+    </androidx.cardview.widget.CardView>
+
+    <RatingBar
+        android:id="@+id/reviewRatingBar"
+        style="@android:style/Widget.Material.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:progressBackgroundTint="@android:color/darker_gray"
+        android:progressTint="@color/colorPrimary"
+        android:secondaryProgressTint="@android:color/white"
+        app:layout_constraintStart_toEndOf="@+id/userImgContainer"
+        app:layout_constraintTop_toTopOf="@+id/userImgContainer"
+        tools:rating="3" />
+
+    <TextView
+        android:id="@+id/reviewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:textColor="@color/darkText1"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/reviewRatingBar"
+        app:layout_constraintTop_toBottomOf="@+id/reviewRatingBar"
+        tools:text="This was amazing!" />
+
+    <TextView
+        android:id="@+id/reviewVisitDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/reviewTitle"
+        app:layout_constraintTop_toBottomOf="@id/reviewTitle"
+        tools:text="Feb 16, 2020" />
+
+    <TextView
+        android:id="@+id/reviewDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="80dp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/userImgContainer"
+        app:layout_constraintTop_toBottomOf="@id/reviewVisitDate"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

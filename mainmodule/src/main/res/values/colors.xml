@@ -6,7 +6,11 @@
     <color name="colorAccent">#fe724c</color>
     <color name="windowBackground">#EEF0F2</color>
     <color name="statusBarColor">#D3DBDF</color>
-    <color name="listItemBackground">#FEFEFE</color>
-    <color name="darkText">#272D2F</color>
+    <color name="itemBackground">#FEFEFE</color>
+    <color name="darkText1">#272D2F</color>
     <color name="lightText">#D7D7D7</color>
+    <color name="lightText1">#d1d1d1</color>
+    <color name="darkText2">#1D2C2F</color>
+    <color name="darkText3">#3C4D54</color>
+    <color name="redWithAlpha">#ff7575</color>
 </resources>

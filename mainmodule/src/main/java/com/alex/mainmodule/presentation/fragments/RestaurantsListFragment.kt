@@ -1,8 +1,9 @@
 package com.alex.mainmodule.presentation.fragments
 
 import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,13 @@ import com.alex.mainmodule.R
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.presentation.MainActivityViewModel
 import com.alex.mainmodule.presentation.MainActivityViewState
+import kotlinx.android.synthetic.main.restaurant_details_fragment.*
 import kotlinx.android.synthetic.main.restaurants_list_fragment.*
 import kotlinx.android.synthetic.main.restaurants_list_item.view.*
 import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
 import me.saket.inboxrecyclerview.dimming.DimPainter
-import me.saket.inboxrecyclerview.page.PullToCollapseListener
+import me.saket.inboxrecyclerview.page.InterceptResult
+import me.saket.inboxrecyclerview.page.SimplePageStateChangeCallbacks
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
@@ -40,7 +43,7 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.viewState.observe(viewLifecycleOwner, {
-            if (it == MainActivityViewState.ViewRestaurant) {
+            if (it == MainActivityViewState.ViewRestaurantsList) {
                 restaurantsListRecyclerView.collapse()
             }
         })
@@ -49,25 +52,25 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
     }
 
     private fun setupExpandablePageLayout() {
-        restaurantsExpandablePage.pullToCollapseThresholdDistance =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
-                .toInt()
-        restaurantsExpandablePage.pullToCollapseListener.addOnPullListener(object :
-            PullToCollapseListener.OnPullListener {
-            override fun onPull(
-                deltaY: Float,
-                currentTranslationY: Float,
-                upwardPull: Boolean,
-                deltaUpwardPull: Boolean,
-                collapseEligible: Boolean
-            ) {
-                if (collapseEligible) {
-                    viewModel.onRestaurantCollapsed()
+
+        restaurantsExpandablePage.pullToCollapseInterceptor = { downX, downY, upwardPull ->
+            if (restaurantDetailsScrollView.globalVisibleRect().contains(downX, downY).not()) {
+                InterceptResult.IGNORED
+            } else {
+                val directionInt = if (upwardPull) +1 else -1
+                val canScrollFurther = restaurantDetailsScrollView.canScrollVertically(directionInt)
+                when {
+                    canScrollFurther -> InterceptResult.INTERCEPTED
+                    else -> InterceptResult.IGNORED
                 }
             }
+        }
 
-            override fun onRelease(collapseEligible: Boolean) {
-                //NA
+        restaurantsExpandablePage.addStateChangeCallbacks(object :
+            SimplePageStateChangeCallbacks() {
+            override fun onPageCollapsed() {
+                restaurantDetailsScrollView.scrollTo(0, 0)
+                viewModel.onRestaurantCollapsed()
             }
         })
     }
@@ -157,6 +160,17 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
                 }
             }
         }
+    }
+
+    private fun View.globalVisibleRect(): RectF {
+        val rect = Rect()
+        getGlobalVisibleRect(rect)
+        return RectF(
+            rect.left.toFloat(),
+            rect.top.toFloat(),
+            rect.right.toFloat(),
+            rect.bottom.toFloat()
+        )
     }
 }
 

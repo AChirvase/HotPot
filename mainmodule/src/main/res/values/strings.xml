@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">mainmodule</string>
-    <string name="search_restaurant_hint"> What restaurant?</string>
+    <string name="search_restaurant_hint">What restaurant?</string>
+    <string name="leave_a_comment">Leave a comment</string>
+    <string name="review_title"><i><b>Title</b></i></string>
+    <string name="review_rating_question">How would you rate your experience?</string>
+    <string name="review_visit_date_question">When did you visit this restaurant?</string>
+    <string name="review_visit_date_placeholder">Pick a date</string>
+    <string name="review_description"><i><b>Tell us more about it…</b></i></string>
 </resources>

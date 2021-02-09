@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/restaurantDetailsScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/windowBackground"
+        android:padding="20dp">
+
+
+        <TextView
+            android:id="@+id/reviewEditModeTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:text="Edit Mode"
+            android:textAllCaps="true"
+            android:textColor="@color/redWithAlpha"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/deleteReviewIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="20dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_delete_24"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/redWithAlpha"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/rateContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/itemBackground"
+            android:elevation="12dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewEditModeTv">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/review_rating_question"
+                android:textColor="@color/darkText3" />
+
+            <RatingBar
+                android:id="@+id/reviewRatingBar"
+                style="@android:style/Widget.Material.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:progressTint="@color/colorPrimary"
+                android:rating="5"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:secondaryProgressTint="@color/colorPrimary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/leaveCommentTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/leave_a_comment"
+            android:textAllCaps="true"
+            android:textColor="@color/lightText1"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rateContainer" />
+
+        <EditText
+            android:id="@+id/reviewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/itemBackground"
+            android:elevation="4dp"
+            android:hint="@string/review_title"
+            android:inputType="textCapSentences"
+            android:maxLength="100"
+            android:paddingStart="24dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/leaveCommentTv" />
+
+        <EditText
+            android:id="@+id/reviewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/itemBackground"
+            android:elevation="4dp"
+            android:gravity="top|start"
+            android:hint="@string/review_description"
+            android:inputType="textMultiLine|textCapSentences"
+            android:padding="23dp"
+            android:paddingStart="24dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewTitle" />
+
+        <LinearLayout
+            android:id="@+id/visitDateContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/itemBackground"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewDescription">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/review_visit_date_question"
+                android:textColor="@color/darkText3" />
+
+
+            <TextView
+                android:id="@+id/visitDateTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rectangle_round_corners_primary_color"
+                android:padding="12dp"
+                android:text="@string/review_visit_date_placeholder"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

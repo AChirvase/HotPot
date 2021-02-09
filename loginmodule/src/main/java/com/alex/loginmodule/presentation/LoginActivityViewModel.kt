@@ -5,14 +5,18 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alex.loginmodule.data.LoginRepository
+import com.alex.loginmodule.utils.Constants
 import com.alex.loginmodule.utils.Constants.LOGIN_TAG
+import com.alex.mainmodule.domain.User
+import com.alex.mainmodule.presentation.LoginNavigator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
+import org.koin.core.get
+import org.koin.core.qualifier.named
 
 
 sealed class LoginActivityViewState {
@@ -32,9 +36,8 @@ sealed class LoginActivityViewState {
 
 class LoginActivityViewModel(
     private val context: Context,
-    private var googleSignInClient: GoogleSignInClient,
-    private var auth: FirebaseAuth
-) : ViewModel(), KoinComponent {
+    private val repository: LoginRepository
+) : ViewModel(), LoginNavigator, KoinComponent {
 
     val viewState: MutableLiveData<LoginActivityViewState> by lazy {
         MutableLiveData<LoginActivityViewState>().also {
@@ -46,12 +49,13 @@ class LoginActivityViewModel(
         viewState.value = LoginActivityViewState.SignInWithGoogle
     }
 
-    fun getGoogleSignInIntent(): Intent = googleSignInClient.signInIntent
+    fun getGoogleSignInIntent(): Intent = repository.getGoogleSignInIntent()
 
     fun onGoogleSignInResult(data: Intent?) {
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
             val account = task.getResult(ApiException::class.java)!!
+            repository.addUser(User(name = account.displayName!!, email = account.email!!))
             firebaseAuthenticationWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
             viewState.value = LoginActivityViewState.LoginFailed
@@ -60,56 +64,45 @@ class LoginActivityViewModel(
     }
 
     private fun firebaseAuthenticationWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    viewState.value = LoginActivityViewState.LoginSuccess
-                } else {
-                    viewState.value = LoginActivityViewState.LoginFailed
-                    Log.w(LOGIN_TAG, "firebaseAuthenticationWithGoogle:failure", task.exception)
-                }
+        GlobalScope.launch {
+            if (repository.firebaseAuthenticationWithGoogle(idToken)) {
+                viewState.postValue(LoginActivityViewState.LoginSuccess)
+            } else {
+                viewState.postValue(LoginActivityViewState.LoginFailed)
             }
+        }
     }
 
     fun checkIfUserAlreadyAuthenticated() {
-        //TODO
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
+        if (repository.isUserAlreadyAuthenticated()) {
+            viewState.value = LoginActivityViewState.LoginSuccess
+        }
     }
 
     fun signInWithEmailAndPassword(email: String, password: String) {
         if (!isFormValid(email, password)) {
             return
         }
-
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    viewState.value = LoginActivityViewState.LoginSuccess
-                } else {
-                    Log.w(LOGIN_TAG, "signInWithEmailAndPassword:failure", task.exception)
-                    viewState.value = LoginActivityViewState.LoginFailed
-                }
+        GlobalScope.launch {
+            if (repository.signInWithEmailAndPassword(email, password)) {
+                viewState.postValue(LoginActivityViewState.LoginSuccess)
+            } else {
+                viewState.postValue(LoginActivityViewState.LoginFailed)
             }
+        }
     }
 
     fun signUpWithEmailAndPassword(username: String, email: String, password: String) {
         if (!isFormValid(email, password, username)) {
             return
         }
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val user = auth.currentUser
-                user?.updateProfile(
-                    UserProfileChangeRequest.Builder().setDisplayName(username).build()
-                )
-                viewState.value = LoginActivityViewState.SignUpSuccess
+
+        GlobalScope.launch {
+            if (repository.signUpWithEmailAndPassword(email, password)) {
+                repository.addUser(User(username, email))
+                viewState.postValue(LoginActivityViewState.SignUpSuccess)
             } else {
-                Log.w(LOGIN_TAG, "createUserWithEmailAndPassword:failure", task.exception)
-                viewState.value = LoginActivityViewState.SignUpFailed
+                viewState.postValue(LoginActivityViewState.SignUpFailed)
             }
         }
     }
@@ -148,5 +141,12 @@ class LoginActivityViewModel(
         viewState.value = LoginActivityViewState.ShowLoginScreen
     }
 
+    override fun signOut() {
+        repository.signOut()
+        goToLogin()
+        val intent = Intent(context, get(named(Constants.LOGIN_ACTIVITY_CLASS)))
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
+    }
 
 }

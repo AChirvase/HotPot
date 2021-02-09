@@ -1,6 +1,7 @@
-package com.alex.mainmodule
+package com.alex.loginmodule
 
 import android.app.Application
+import com.alex.loginmodule.framework.loginModule
 import com.alex.mainmodule.framework.mainModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -13,7 +14,7 @@ class HotPotApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@HotPotApplication)
-            modules(mainModule)
+            modules(listOf(loginModule, mainModule))
         }
     }
 }

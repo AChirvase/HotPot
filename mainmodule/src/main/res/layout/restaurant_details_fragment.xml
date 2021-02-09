@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/restaurantDetailsScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/restaurantTopContainer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/restaurantTopContainerBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.5"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/restaurantName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Burger Factory" />
+
+            <TextView
+                android:id="@+id/restaurantAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toBottomOf="@id/restaurantName"
+                tools:text="Spl. Independentei 290" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/restaurantAddress">
+
+                <RatingBar
+                    android:id="@+id/restaurantRatingBar"
+                    style="@android:style/Widget.Material.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:progressBackgroundTint="@android:color/white"
+                    android:progressTint="@android:color/white"
+                    android:rating="5"
+                    android:secondaryProgressTint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/restaurantNumberOfReviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:textColor="@android:color/white"
+                    tools:text="120" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/restaurantReviewsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/restaurantTopContainer" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

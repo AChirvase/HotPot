@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.alex.loginmodule.R
+import com.alex.loginmodule.presentation.LoginActivityViewModel
+import com.alex.loginmodule.presentation.LoginActivityViewState
 import kotlinx.android.synthetic.main.login_fragment.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
 class LoginFragment : Fragment(), KoinComponent {
-    private val viewModel: com.alex.loginmodule.presentation.LoginActivityViewModel by sharedViewModel()
+    private val viewModel: LoginActivityViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,16 +48,17 @@ class LoginFragment : Fragment(), KoinComponent {
 
 
     private fun subscribeForViewStateChange() {
-        viewModel.viewState.observe(this, { viewState -> updateViewState(viewState) })
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState -> updateViewState(viewState) })
     }
 
-    private fun updateViewState(viewState: com.alex.loginmodule.presentation.LoginActivityViewState) {
+    private fun updateViewState(viewState: LoginActivityViewState) {
         when (viewState) {
-            com.alex.loginmodule.presentation.LoginActivityViewState.SignInWithGoogle -> showProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.LoginFailed -> hideProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.LoginSuccess -> hideProgressBar()
-            com.alex.loginmodule.presentation.LoginActivityViewState.ShowEmailError -> showInvalidEmailError()
-            com.alex.loginmodule.presentation.LoginActivityViewState.ShowPasswordError -> showInvalidPasswordError()
+            LoginActivityViewState.ShowLoginScreen -> hideProgressBar()
+            LoginActivityViewState.SignInWithGoogle -> showProgressBar()
+            LoginActivityViewState.LoginFailed -> hideProgressBar()
+            LoginActivityViewState.LoginSuccess -> hideProgressBar()
+            LoginActivityViewState.ShowEmailError -> showInvalidEmailError()
+            LoginActivityViewState.ShowPasswordError -> showInvalidPasswordError()
             else -> {
             }
         }
