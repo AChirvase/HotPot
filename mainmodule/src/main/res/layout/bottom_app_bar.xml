@@ -16,7 +16,7 @@
         app:fabCradleMargin="8dp">
 
         <ImageButton
-            android:id="@+id/bottomAppBarBtn4"
+            android:id="@+id/bottomAppBarFarRightBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -27,7 +27,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageButton
-            android:id="@+id/bottomAppBarBtn3"
+            android:id="@+id/bottomAppBarMiddleRightBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -38,24 +38,12 @@
             tools:ignore="ContentDescription" />
 
         <ImageButton
-            android:id="@+id/bottomAppBarBtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="12dp"
-            android:src="@drawable/ic_baseline_filter_list_24"
-            android:tint="@android:color/white"
-            tools:ignore="ContentDescription" />
-
-        <ImageButton
-            android:id="@+id/bottomAppBarBtn1"
+            android:id="@+id/bottomAppBarLeftBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
-            android:rotation="180"
             android:src="@drawable/ic_baseline_logout_24"
             android:tint="@android:color/white"
             tools:ignore="ContentDescription" />

@@ -3,23 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp"
-    android:layout_height="56dp"
-    android:layout_marginVertical="4dp"
-    android:background="@android:color/transparent">
+    android:layout_height="100dp"
+    android:layout_marginTop="12dp"
+    android:background="@android:color/white"
+    android:elevation="8dp"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/restaurantPictureIv"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/rectangle_round_corners"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/restaurantNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/darkText3"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:textColor="@color/darkText3"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="KFC" />
+        app:layout_constraintStart_toEndOf="@id/restaurantPictureIv"
+        app:layout_constraintTop_toTopOf="@id/restaurantPictureIv"
+        tools:text="Maria si Ion" />
+
+    <TextView
+        android:id="@+id/restaurantScheduleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="10:30AM to 22AM"
+        android:textColor="@color/lightText2"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/restaurantAddressTv"
+        app:layout_constraintStart_toStartOf="@id/restaurantNameTv" />
+
+    <TextView
+        android:id="@+id/restaurantAddressTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:maxWidth="170dp"
+        android:maxLines="2"
+        android:textColor="@color/lightText2"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/restaurantPictureIv"
+        app:layout_constraintStart_toStartOf="@id/restaurantNameTv"
+        tools:text="Spl Independentei 290Spl Independentei 290" />
+
+    <RatingBar
+        android:id="@+id/restaurantRatingBar"
+        style="@style/IndicatorRatingBarSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/restaurantNameTv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

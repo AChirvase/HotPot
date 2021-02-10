@@ -2,9 +2,16 @@
     <string name="app_name">mainmodule</string>
     <string name="search_restaurant_hint">What restaurant?</string>
     <string name="leave_a_comment">Leave a comment</string>
+    <string name="restaurant_details_indication">Restaurant details</string>
     <string name="review_title"><i><b>Title</b></i></string>
+    <string name="restaurant_address"><i><b>Address</b></i></string>
+    <string name="restaurant_phone_number"><i><b>Phone number</b></i></string>
+    <string name="restaurant_name"><i><b>Name</b></i></string>
     <string name="review_rating_question">How would you rate your experience?</string>
     <string name="review_visit_date_question">When did you visit this restaurant?</string>
     <string name="review_visit_date_placeholder">Pick a date</string>
     <string name="review_description"><i><b>Tell us more about it…</b></i></string>
+    <string name="filter">Filter</string>
+    <string name="edit_mode">Edit Mode</string>
+    <string name="number_of_restaurants">%d Restaurants</string>
 </resources>

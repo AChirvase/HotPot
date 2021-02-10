@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alex.mainmodule.R
+import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
 import com.alex.mainmodule.presentation.MainActivityViewModel
 import com.squareup.picasso.Picasso
@@ -50,17 +51,12 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
             viewModel.showEditReviewScreen(it)
         }
 
-        viewModel.selectedRestaurantLiveData.observe(
-            viewLifecycleOwner,
-            { restaurant ->
-                restaurantName.text = restaurant.name
-                restaurantAddress.text = restaurant.address
-                restaurantNumberOfReviews.text = "122"
-                restaurantRatingBar.rating = 3.5f
-                reviewsAdapter.reviewsList = restaurant.reviews
-                reviewsAdapter.reviewsList.sortBy { it.dateInMillis }
-                reviewsAdapter.notifyDataSetChanged()
-            })
+        viewModel.selectedRestaurantLiveData.observe(viewLifecycleOwner) { restaurant ->
+            if (restaurant == null) {
+                return@observe
+            }
+            updateRestaurantInfo(restaurant, reviewsAdapter)
+        }
 
 
         val imageUri = "https://i.imgur.com/n6bF2Vx.jpeg"
@@ -68,8 +64,20 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
 
     }
 
-    private class ReviewsAdapter :
-        RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
+    private fun updateRestaurantInfo(restaurant: Restaurant, reviewsAdapter: ReviewsAdapter) {
+        restaurantName.text = restaurant.name
+        restaurantAddress.text = restaurant.address
+        restaurantNumberOfReviews.text = restaurant.reviews.size.toString()
+        restaurantRatingBar.rating =
+            restaurant.reviews.map { it.restaurantOverallEvaluation }.average().toFloat()
+
+        reviewsAdapter.reviewsList = restaurant.reviews
+        reviewsAdapter.reviewsList.sortBy { it.dateInMillis }
+        reviewsAdapter.notifyDataSetChanged()
+    }
+
+
+    private class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
         var reviewsList: ArrayList<Review> = ArrayList()
 
         //this is a callback

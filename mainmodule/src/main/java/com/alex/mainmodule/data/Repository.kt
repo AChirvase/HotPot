@@ -27,4 +27,11 @@ class Repository(
     fun deleteReview(restaurant: Restaurant, review: Review) =
         firebaseDataSource.deleteReview(restaurant, review)
 
+    fun deleteRestaurant(restaurant: Restaurant) =
+        firebaseDataSource.deleteRestaurant(restaurant)
+
+
+    fun editRestaurant(oldRestaurant: Restaurant, newRestaurant: Restaurant) =
+        firebaseDataSource.editRestaurant(oldRestaurant, newRestaurant)
+
 }

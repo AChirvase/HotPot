@@ -23,5 +23,19 @@
 
     </style>
 
+    <style name="IndicatorRatingBarSmall" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressBackgroundTint">@android:color/darker_gray</item>
+        <item name="android:progressTint">@color/colorPrimary</item>
+        <item name="android:secondaryProgressTint">@android:color/white</item>
+        <item name="android:isIndicator">true</item>
+    </style>
+
+    <style name="IndicatorRatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressBackgroundTint">@android:color/darker_gray</item>
+        <item name="android:progressTint">@color/colorPrimary</item>
+        <item name="android:secondaryProgressTint">@android:color/white</item>
+        <item name="android:isIndicator">true</item>
+    </style>
+
 
 </resources>

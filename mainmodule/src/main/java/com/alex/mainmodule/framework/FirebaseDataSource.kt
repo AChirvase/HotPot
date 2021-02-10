@@ -20,6 +20,8 @@ interface FirebaseDataSource {
     fun addUser(user: User): Task<Void>
     fun replaceReview(restaurant: Restaurant, oldReview: Review, newReview: Review)
     fun deleteReview(restaurant: Restaurant, review: Review): Task<Void>
+    fun deleteRestaurant(restaurant: Restaurant): Task<Void>
+    fun editRestaurant(oldRestaurant: Restaurant, newRestaurant: Restaurant)
 }
 
 class FirebaseDataSourceImpl(
@@ -59,6 +61,15 @@ class FirebaseDataSourceImpl(
     override fun deleteReview(restaurant: Restaurant, review: Review) =
         restaurantsReference.document(restaurant.id)
             .update(reviewsFieldName, FieldValue.arrayRemove(review))
+
+    override fun deleteRestaurant(restaurant: Restaurant) =
+        restaurantsReference.document(restaurant.id).delete()
+
+
+    override fun editRestaurant(oldRestaurant: Restaurant, newRestaurant: Restaurant) {
+        newRestaurant.reviews = oldRestaurant.reviews
+        restaurantsReference.document(oldRestaurant.id).set(newRestaurant)
+    }
 
 
 }

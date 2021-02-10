@@ -29,16 +29,13 @@
 
     <RatingBar
         android:id="@+id/reviewRatingBar"
-        style="@android:style/Widget.Material.RatingBar.Small"
+        style="@style/IndicatorRatingBarSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
         android:isIndicator="true"
         android:numStars="5"
-        android:progressBackgroundTint="@android:color/darker_gray"
-        android:progressTint="@color/colorPrimary"
-        android:secondaryProgressTint="@android:color/white"
         app:layout_constraintStart_toEndOf="@+id/userImgContainer"
         app:layout_constraintTop_toTopOf="@+id/userImgContainer"
         tools:rating="3" />

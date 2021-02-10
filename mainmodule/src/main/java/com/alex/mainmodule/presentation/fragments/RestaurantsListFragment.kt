@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,12 +45,19 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.viewState.observe(viewLifecycleOwner, {
-            if (it == MainActivityViewState.ViewRestaurantsList) {
+            if (it == MainActivityViewState.ShowRestaurantsList) {
                 restaurantsListRecyclerView.collapse()
             }
         })
         setupExpandablePageLayout()
         setupRecyclerView(setupAdapter())
+        setupButtons()
+    }
+
+    private fun setupButtons() {
+        filterRestaurantsTv.setOnClickListener {
+
+        }
     }
 
     private fun setupExpandablePageLayout() {
@@ -93,6 +102,7 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
         val restaurantsListAdapter = RestaurantsListAdapter()
 
         viewModel.restaurantsListLiveData.observe(viewLifecycleOwner, {
+            numberOfRestaurantsTv.text = getString(R.string.number_of_restaurants, it.size)
             restaurantsListAdapter.restaurantsList = it as ArrayList<Restaurant>
             restaurantsListAdapter.notifyDataSetChanged()
         })
@@ -142,12 +152,28 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             viewHolder.restaurantName.text = restaurantsList[position].name
+            viewHolder.restaurantAddressTv.text = restaurantsList[position].address
+            viewHolder.restaurantRatingBar.rating =
+                restaurantsList[position].reviews.map { it.restaurantOverallEvaluation }.average()
+                    .toFloat()
         }
 
         override fun getItemCount() = restaurantsList.size
 
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return position
+        }
+
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var restaurantName: TextView = view.restaurantNameTv
+            var restaurantPicture: ImageView = view.restaurantPictureIv
+            var restaurantScheduleTv: TextView = view.restaurantScheduleTv
+            var restaurantAddressTv: TextView = view.restaurantAddressTv
+            var restaurantRatingBar: RatingBar = view.restaurantRatingBar
 
             init {
                 view.setOnClickListener {

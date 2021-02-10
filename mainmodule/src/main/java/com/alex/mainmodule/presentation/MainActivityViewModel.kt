@@ -3,6 +3,7 @@ package com.alex.mainmodule.presentation
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alex.mainmodule.R
 import com.alex.mainmodule.data.Repository
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
@@ -11,12 +12,16 @@ import org.koin.core.KoinComponent
 
 
 sealed class MainActivityViewState {
-    object ViewRestaurantsList : MainActivityViewState()
-    object ViewUsersList : MainActivityViewState()
-    object ViewRestaurant : MainActivityViewState()
-    object ShowWriteReviewScreen : MainActivityViewState()
-    object SendReview : MainActivityViewState()
+    object ShowRestaurantsList : MainActivityViewState()
+    object ShowUsersList : MainActivityViewState()
+    object ShowRestaurant : MainActivityViewState()
+    object ShowAddReviewScreen : MainActivityViewState()
+    object ShowAddRestaurantScreen : MainActivityViewState()
+    object AddRestaurant : MainActivityViewState()
+    object AddReview : MainActivityViewState()
     object ShowEditReviewScreen : MainActivityViewState()
+    object ShowEditRestaurantScreen : MainActivityViewState()
+    object EditRestaurant : MainActivityViewState()
     object EditReview : MainActivityViewState()
     object ExitApp : MainActivityViewState()
     object FinishActivity : MainActivityViewState()
@@ -35,7 +40,7 @@ class MainActivityViewModel(
 
     val viewState: MutableLiveData<MainActivityViewState> by lazy {
         MutableLiveData<MainActivityViewState>().also {
-            it.value = MainActivityViewState.ViewRestaurantsList
+            it.value = MainActivityViewState.ShowRestaurantsList
         }
     }
 
@@ -57,7 +62,7 @@ class MainActivityViewModel(
 
     init {
         repository.getRestaurantsLiveData().observeForever {
-            restaurantsListLiveData.value = it
+            restaurantsListLiveData.value = it.sortedBy { restaurant -> restaurant.name }.toList()
             selectedRestaurantLiveData.value = it.find { restaurant ->
                 restaurant.id == selectedRestaurantLiveData.value?.id
             }
@@ -70,58 +75,62 @@ class MainActivityViewModel(
 
     fun onBackPressed() {
         viewState.value = when (viewState.value) {
-            MainActivityViewState.ViewRestaurantsList -> MainActivityViewState.ExitApp
-            MainActivityViewState.ViewUsersList -> MainActivityViewState.ExitApp
-            MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.ViewRestaurant
-            MainActivityViewState.ShowWriteReviewScreen -> MainActivityViewState.ViewRestaurant
-            MainActivityViewState.ViewRestaurant -> MainActivityViewState.ViewRestaurantsList
+            MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.ExitApp
+            MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
+            MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.ShowRestaurant
+            MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.ShowRestaurant
+            MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.ShowRestaurant
+            MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.ShowRestaurantsList
+            MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowRestaurantsList
             else -> viewState.value
         }
     }
 
     fun onRestaurantCollapsed() {
-        viewState.value = MainActivityViewState.ViewRestaurantsList
+        viewState.value = MainActivityViewState.ShowRestaurantsList
     }
 
     fun goToViewRestaurant(restaurant: Restaurant) {
         selectedRestaurantLiveData.value = restaurant
-        viewState.value = MainActivityViewState.ViewRestaurant
+        viewState.value = MainActivityViewState.ShowRestaurant
     }
 
-    fun addRestaurantsTest() {
+    private fun addRestaurantsTest() {
         repository.addRestaurant(Restaurant(name = "KFC"))
         repository.addRestaurant(Restaurant(name = "MCDonald"))
         repository.addRestaurant(Restaurant(name = "Shaworma"))
     }
 
-    fun signOut() {
+
+    private fun signOut() {
         viewState.value = MainActivityViewState.FinishActivity
         loginNavigator.signOut()
     }
 
-    fun onUserClicked(specific: User) {
+    fun onUserClicked(user: User) {
 
     }
 
     fun addReview(review: Review) {
         selectedRestaurantLiveData.value?.let { repository.addReview(review, it) }
-        viewState.value = MainActivityViewState.ViewRestaurant
+        viewState.value = MainActivityViewState.ShowRestaurant
     }
 
-    fun onSwitchUsersRestaurantsPressed() {
+    private fun switchBetweenUsersAndRestaurantsList() {
         viewState.value = when (viewState.value) {
-            MainActivityViewState.ViewRestaurantsList -> MainActivityViewState.ViewUsersList
-            MainActivityViewState.ViewRestaurant -> MainActivityViewState.ViewUsersList
-            MainActivityViewState.ViewUsersList -> MainActivityViewState.ViewRestaurantsList
+            MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.ShowUsersList
+            MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
             else -> viewState.value
         }
     }
 
     fun onMainButtonClicked() {
         viewState.value = when (viewState.value) {
-            MainActivityViewState.ViewRestaurant -> MainActivityViewState.ShowWriteReviewScreen
-            MainActivityViewState.ShowWriteReviewScreen -> MainActivityViewState.SendReview
+            MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowAddReviewScreen
+            MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.AddReview
+            MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.AddRestaurant
             MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.EditReview
+            MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.EditRestaurant
             else -> viewState.value
         }
     }
@@ -138,7 +147,7 @@ class MainActivityViewModel(
             return
         }
         repository.replaceReview(restaurant, oldReview, newReview)
-        viewState.value = MainActivityViewState.ViewRestaurant
+        viewState.value = MainActivityViewState.ShowRestaurant
     }
 
     fun deleteReview() {
@@ -148,8 +157,84 @@ class MainActivityViewModel(
             return
         }
         repository.deleteReview(restaurant, review)
-        viewState.value = MainActivityViewState.ViewRestaurant
+        viewState.value = MainActivityViewState.ShowRestaurant
     }
+
+    fun deleteRestaurant() {
+        selectedRestaurantLiveData.value?.let { repository.deleteRestaurant(it) }
+        viewState.value = MainActivityViewState.ShowRestaurantsList
+    }
+
+    fun addRestaurant(restaurant: Restaurant) {
+        repository.addRestaurant(restaurant)
+        viewState.value = MainActivityViewState.ShowRestaurantsList
+    }
+
+    fun editRestaurant(newRestaurant: Restaurant) {
+        selectedRestaurantLiveData.value?.let { repository.editRestaurant(it, newRestaurant) }
+        viewState.value = MainActivityViewState.ShowRestaurant
+    }
+
+    fun onBottomAppBarLeftBtnClicked() {
+        when (viewState.value) {
+            MainActivityViewState.ShowRestaurantsList -> signOut()
+            else -> onBackPressed()
+        }
+    }
+
+
+    fun onBottomAppBarMiddleRightBtnClicked() {
+        when (viewState.value) {
+            MainActivityViewState.ShowRestaurantsList ->
+                viewState.value = MainActivityViewState.ShowAddRestaurantScreen
+            MainActivityViewState.ShowRestaurant -> deleteRestaurant()
+            else -> {
+            }
+        }
+
+    }
+
+    fun onBottomAppBarFarRightBtn2Clicked() {
+        when (viewState.value) {
+            MainActivityViewState.ShowRestaurant -> viewState.value =
+                MainActivityViewState.ShowEditRestaurantScreen
+            else -> {
+                switchBetweenUsersAndRestaurantsList()
+            }
+        }
+    }
+
+    fun getImageForMainBtn() = when (viewState.value) {
+        MainActivityViewState.ShowRestaurantsList,
+        MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_search_24
+        MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_rate_review_24
+        MainActivityViewState.ShowEditReviewScreen -> R.drawable.ic_baseline_mode_edit_24
+        MainActivityViewState.ShowAddReviewScreen -> R.drawable.ic_baseline_send_24
+        MainActivityViewState.ShowAddRestaurantScreen -> R.drawable.ic_baseline_add_restaurant_24
+        MainActivityViewState.ShowEditRestaurantScreen -> R.drawable.ic_baseline_mode_edit_24
+        else -> R.drawable.ic_baseline_search_24
+    }
+
+    fun getImageForFarRightBtn() = when (viewState.value) {
+        MainActivityViewState.ShowRestaurantsList -> R.drawable.ic_baseline_groups_24
+        MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_mode_edit_24
+        MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_restaurant_24
+        else -> null
+    }
+
+    fun getImageForMiddleRightBtn() = when (viewState.value) {
+        MainActivityViewState.ShowRestaurantsList -> R.drawable.ic_baseline_add_restaurant_24
+        MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_delete_24
+        MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_person_add_alt_1_24
+        else -> null
+    }
+
+    fun getImageForLeftBtn() = when (viewState.value) {
+        MainActivityViewState.ShowRestaurantsList -> R.drawable.ic_baseline_logout_24
+        else -> R.drawable.ic_baseline_chevron_left_24
+    }
+
+
 }
 
 interface LoginNavigator {

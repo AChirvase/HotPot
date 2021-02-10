@@ -1,12 +1,15 @@
 package com.alex.mainmodule.presentation
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.alex.mainmodule.R
+import com.alex.mainmodule.presentation.fragments.AddRestaurantFragment
+import com.alex.mainmodule.presentation.fragments.AddReviewFragment
 import com.alex.mainmodule.presentation.fragments.RestaurantsListFragment
 import com.alex.mainmodule.presentation.fragments.UsersListFragment
-import com.alex.mainmodule.presentation.fragments.WriteReviewFragment
+import com.alex.mainmodule.utils.Utils.hideSystemUI
 import kotlinx.android.synthetic.main.bottom_app_bar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
@@ -16,12 +19,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     private var restaurantsListFragment = RestaurantsListFragment()
     private var usersListFragment = UsersListFragment()
-    private var writeReviewFragment = WriteReviewFragment()
+    private var addReviewFragment = AddReviewFragment()
+    private var addRestaurantFragment = AddRestaurantFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity_layout)
         subscribeForViewStateChange()
+        hideSystemUI(window)
     }
 
     private fun subscribeForViewStateChange() {
@@ -30,24 +35,15 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     private fun updateViewState(viewState: MainActivityViewState) {
         supportFragmentManager.executePendingTransactions()
+        setupAppBar()
         when (viewState) {
-            MainActivityViewState.ViewRestaurantsList -> {
-                setupAppBarForRestaurantsList()
-                showRestaurantsListFragment()
-            }
-            MainActivityViewState.ViewRestaurant -> {
-                setupAppBarForViewRestaurant()
-                showRestaurantsListFragment()
-            }
-            MainActivityViewState.ShowEditReviewScreen -> {
-                setupAppBarForWriteReview()
-                showWriteReviewFragment()
-            }
-            MainActivityViewState.ShowWriteReviewScreen -> {
-                setupAppBarForWriteReview()
-                showWriteReviewFragment()
-            }
-            MainActivityViewState.ViewUsersList -> showUsersListFragment()
+            MainActivityViewState.ShowRestaurantsList -> showRestaurantsListFragment()
+            MainActivityViewState.ShowRestaurant -> showRestaurantsListFragment()
+            MainActivityViewState.ShowEditReviewScreen,
+            MainActivityViewState.ShowAddReviewScreen -> showWriteReviewFragment()
+            MainActivityViewState.ShowAddRestaurantScreen,
+            MainActivityViewState.ShowEditRestaurantScreen -> showAddRestaurantFragment()
+            MainActivityViewState.ShowUsersList -> showUsersListFragment()
             MainActivityViewState.ExitApp -> finishAffinity()
             MainActivityViewState.FinishActivity -> finish()
             else -> {
@@ -55,29 +51,54 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-    private fun setupAppBarForWriteReview() {
-        bottomAppBarMainBtn.setImageResource(R.drawable.ic_baseline_send_24)
+    private fun setupAppBar() {
+
+        bottomAppBarMainBtn.setImageResource(viewModel.getImageForMainBtn())
+
+        bottomAppBarLeftBtn.setImageResource(viewModel.getImageForLeftBtn())
+
+        viewModel.getImageForFarRightBtn()?.let {
+            bottomAppBarFarRightBtn.setImageResource(it)
+            bottomAppBarFarRightBtn.visibility = View.VISIBLE
+
+        } ?: run {
+            bottomAppBarFarRightBtn.visibility = View.GONE
+        }
+
+        viewModel.getImageForMiddleRightBtn()?.let {
+            bottomAppBarMiddleRightBtn.setImageResource(it)
+            bottomAppBarMiddleRightBtn.visibility = View.VISIBLE
+
+        } ?: run {
+            bottomAppBarMiddleRightBtn.visibility = View.GONE
+        }
     }
 
-    private fun setupAppBarForRestaurantsList() {
-        bottomAppBarMainBtn.setImageResource(R.drawable.ic_baseline_search_24)
-    }
 
-    private fun setupAppBarForViewRestaurant() {
-        bottomAppBarMainBtn.setImageResource(R.drawable.ic_baseline_rate_review_24)
-    }
-
-
-    private fun showWriteReviewFragment() {
-        if (writeReviewFragment.isAdded) {
-            supportFragmentManager.popBackStackImmediate(writeReviewFragment.javaClass.name, 0)
+    private fun showAddRestaurantFragment() {
+        if (addRestaurantFragment.isAdded) {
+            supportFragmentManager.popBackStackImmediate(addRestaurantFragment.javaClass.name, 0)
             return
         }
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.mainActivityFragmentContainer,
-                writeReviewFragment
-            ).addToBackStack(null)
+                addRestaurantFragment
+            ).addToBackStack(addRestaurantFragment.javaClass.name)
+            .commit()
+    }
+
+    private fun showWriteReviewFragment() {
+        if (addReviewFragment.isAdded) {
+            supportFragmentManager.popBackStackImmediate(addReviewFragment.javaClass.name, 0)
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .hide(restaurantsListFragment)
+            .add(
+                R.id.mainActivityFragmentContainer,
+                addReviewFragment
+            ).addToBackStack(addReviewFragment.javaClass.name)
             .commit()
     }
 
@@ -125,14 +146,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         bottomAppBarMainBtn.setOnClickListener {
             viewModel.onMainButtonClicked()
         }
-        bottomAppBarBtn1.setOnClickListener {
-            viewModel.signOut()
+        bottomAppBarLeftBtn.setOnClickListener {
+            viewModel.onBottomAppBarLeftBtnClicked()
         }
-        bottomAppBarBtn3.setOnClickListener {
-            viewModel.addRestaurantsTest()
+        bottomAppBarMiddleRightBtn.setOnClickListener {
+            viewModel.onBottomAppBarMiddleRightBtnClicked()
         }
-        bottomAppBarBtn4.setOnClickListener {
-            viewModel.onSwitchUsersRestaurantsPressed()
+        bottomAppBarFarRightBtn.setOnClickListener {
+            viewModel.onBottomAppBarFarRightBtn2Clicked()
         }
     }
 }

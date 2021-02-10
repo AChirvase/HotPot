@@ -3,23 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_marginVertical="4dp"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp"
-    android:background="@android:color/transparent">
+    android:layout_height="70dp"
+    android:layout_marginTop="12dp"
+    android:background="@android:color/white"
+    android:elevation="8dp"
+    android:padding="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/userImgContainer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:elevation="12dp"
+        app:cardCornerRadius="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/userImgIv"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:id="@+id/userEmailTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:maxLines="1"
         android:textColor="@color/darkText3"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="alextest@toptal.com" />
+        app:layout_constraintStart_toEndOf="@id/userImgContainer"
+        app:layout_constraintTop_toTopOf="@id/userImgContainer"
+        tools:text="alextest1@alex.com" />
+
+    <TextView
+        android:id="@+id/userNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/lightText2"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/userEmailTv"
+        app:layout_constraintTop_toBottomOf="@id/userEmailTv"
+        tools:text="Alex Chirvase" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

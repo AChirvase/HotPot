@@ -68,13 +68,14 @@ class UsersListFragment : Fragment(), KoinComponent {
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             viewHolder.userEmail.text = usersList[position].email
-
+            viewHolder.userName.text = usersList[position].name
         }
 
         override fun getItemCount() = usersList.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var userEmail: TextView = view.userEmailTv
+            var userName: TextView = view.userNameTv
 
             init {
                 view.setOnClickListener {

@@ -10,6 +10,7 @@
     <color name="darkText1">#272D2F</color>
     <color name="lightText">#D7D7D7</color>
     <color name="lightText1">#d1d1d1</color>
+    <color name="lightText2">#c7c7c7</color>
     <color name="darkText2">#1D2C2F</color>
     <color name="darkText3">#3C4D54</color>
     <color name="redWithAlpha">#ff7575</color>

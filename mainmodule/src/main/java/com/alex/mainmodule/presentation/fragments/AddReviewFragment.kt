@@ -11,12 +11,12 @@ import com.alex.mainmodule.R
 import com.alex.mainmodule.domain.Review
 import com.alex.mainmodule.presentation.MainActivityViewModel
 import com.alex.mainmodule.presentation.MainActivityViewState
-import kotlinx.android.synthetic.main.write_review_fragment.*
+import kotlinx.android.synthetic.main.add_review_fragment.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.util.*
 
-class WriteReviewFragment : Fragment(), KoinComponent {
+class AddReviewFragment : Fragment(), KoinComponent {
     private val viewModel: MainActivityViewModel by sharedViewModel()
     private val calendar = Calendar.getInstance()
 
@@ -28,7 +28,7 @@ class WriteReviewFragment : Fragment(), KoinComponent {
         addOnSendReviewListener()
 
         return inflater.inflate(
-            R.layout.write_review_fragment,
+            R.layout.add_review_fragment,
             container,
             false
         )
@@ -86,7 +86,7 @@ class WriteReviewFragment : Fragment(), KoinComponent {
     private fun addOnSendReviewListener() {
         viewModel.viewState.observe(viewLifecycleOwner, {
             when (it) {
-                MainActivityViewState.SendReview -> viewModel.addReview(getReview())
+                MainActivityViewState.AddReview -> viewModel.addReview(getReview())
                 MainActivityViewState.EditReview -> viewModel.editReview(getReview())
                 else -> {
 
