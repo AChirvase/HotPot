@@ -10,21 +10,14 @@ class LoginRepository(
 ) {
     fun getGoogleSignInIntent() = firebaseDataSource.getGoogleSignInIntent()
 
-    fun isUserAlreadyAuthenticated() = firebaseDataSource.isUserAlreadyAuthenticated()
+    fun isUserAlreadyAuthenticated() = mainRepository.isUserAlreadyAuthenticated()
 
-    suspend fun signInWithEmailAndPassword(email: String, password: String) =
-        firebaseDataSource.signInWithEmailAndPassword(email, password)
+    suspend fun signInWithEmailAndPassword(user: User) =
+        firebaseDataSource.signInWithEmailAndPassword(user)
 
-    suspend fun firebaseAuthenticationWithGoogle(idToken: String) =
-        firebaseDataSource.firebaseAuthenticationWithGoogle(idToken)
+    suspend fun signUpWithEmailAndPassword(user: User): Boolean =
+        firebaseDataSource.signUpWithEmailAndPassword(user)
 
-    suspend fun signUpWithEmailAndPassword(email: String, password: String): Boolean =
-        firebaseDataSource.signUpWithEmailAndPassword(email, password)
-
-    fun signOut() = firebaseDataSource.signOut()
-
-    fun addUser(user: User) = mainRepository.addUser(user)
-    fun getCurrentUser() = firebaseDataSource.getCurrentUser()
-
+    fun signOut() = firebaseDataSource.logout()
 
 }

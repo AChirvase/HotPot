@@ -57,10 +57,24 @@ class SignUpFragment : Fragment(), KoinComponent {
             LoginActivityViewState.LoginFailed -> hideProgressBar()
             LoginActivityViewState.LoginSuccess -> hideProgressBar()
             LoginActivityViewState.SignUpFailed -> showSignUpFailedError()
+            LoginActivityViewState.ShowEmailError -> showInvalidEmailError()
+            LoginActivityViewState.ShowPasswordError -> showInvalidPasswordError()
+            LoginActivityViewState.ShowUserNameError -> showInvalidUserNameError()
+
             else -> {
             }
         }
     }
+
+    private fun showInvalidEmailError() =
+        Toast.makeText(context, R.string.email_error, Toast.LENGTH_SHORT).show()
+
+    private fun showInvalidPasswordError() =
+        Toast.makeText(context, R.string.password_error, Toast.LENGTH_SHORT).show()
+
+    private fun showInvalidUserNameError() =
+        Toast.makeText(context, R.string.user_name_error, Toast.LENGTH_SHORT).show()
+
 
     private fun showSignUpFailedError() {
         Toast.makeText(context, R.string.sign_up_error, Toast.LENGTH_SHORT).show()

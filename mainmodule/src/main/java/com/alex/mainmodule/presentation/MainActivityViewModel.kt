@@ -17,12 +17,16 @@ sealed class MainActivityViewState {
     object ShowRestaurant : MainActivityViewState()
     object ShowAddReviewScreen : MainActivityViewState()
     object ShowAddRestaurantScreen : MainActivityViewState()
+    object ShowAddUserScreen : MainActivityViewState()
     object AddRestaurant : MainActivityViewState()
     object AddReview : MainActivityViewState()
+    object AddUser : MainActivityViewState()
     object ShowEditReviewScreen : MainActivityViewState()
     object ShowEditRestaurantScreen : MainActivityViewState()
+    object ShowEditUserScreen : MainActivityViewState()
     object EditRestaurant : MainActivityViewState()
     object EditReview : MainActivityViewState()
+    object EditUser : MainActivityViewState()
     object ExitApp : MainActivityViewState()
     object FinishActivity : MainActivityViewState()
 }
@@ -56,6 +60,10 @@ class MainActivityViewModel(
         MutableLiveData<Restaurant>()
     }
 
+    val selectedUserLiveData: MutableLiveData<User> by lazy {
+        MutableLiveData<User>()
+    }
+
     val selectedReviewLiveData: MutableLiveData<Review> by lazy {
         MutableLiveData<Review>()
     }
@@ -70,6 +78,9 @@ class MainActivityViewModel(
 
         repository.getUsersListLiveData().observeForever {
             usersListLiveData.value = it
+            selectedUserLiveData.value = it.find { user ->
+                user.email == selectedUserLiveData.value?.email
+            }
         }
     }
 
@@ -79,8 +90,10 @@ class MainActivityViewModel(
             MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
             MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.ShowRestaurant
             MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.ShowRestaurant
+            MainActivityViewState.ShowEditUserScreen -> MainActivityViewState.ShowUsersList
             MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.ShowRestaurant
             MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.ShowRestaurantsList
+            MainActivityViewState.ShowAddUserScreen -> MainActivityViewState.ShowUsersList
             MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowRestaurantsList
             else -> viewState.value
         }
@@ -95,6 +108,11 @@ class MainActivityViewModel(
         viewState.value = MainActivityViewState.ShowRestaurant
     }
 
+    fun showEditUserScreen(user: User) {
+        selectedUserLiveData.value = user
+        viewState.value = MainActivityViewState.ShowEditUserScreen
+    }
+
     private fun addRestaurantsTest() {
         repository.addRestaurant(Restaurant(name = "KFC"))
         repository.addRestaurant(Restaurant(name = "MCDonald"))
@@ -102,13 +120,9 @@ class MainActivityViewModel(
     }
 
 
-    private fun signOut() {
+    private fun logout() {
         viewState.value = MainActivityViewState.FinishActivity
-        loginNavigator.signOut()
-    }
-
-    fun onUserClicked(user: User) {
-
+        loginNavigator.logout()
     }
 
     fun addReview(review: Review) {
@@ -129,6 +143,8 @@ class MainActivityViewModel(
             MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowAddReviewScreen
             MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.AddReview
             MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.AddRestaurant
+            MainActivityViewState.ShowAddUserScreen -> MainActivityViewState.AddUser
+            MainActivityViewState.ShowEditUserScreen -> MainActivityViewState.EditUser
             MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.EditReview
             MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.EditRestaurant
             else -> viewState.value
@@ -146,7 +162,7 @@ class MainActivityViewModel(
         if (restaurant == null || oldReview == null) {
             return
         }
-        repository.replaceReview(restaurant, oldReview, newReview)
+        repository.editReview(restaurant, oldReview, newReview)
         viewState.value = MainActivityViewState.ShowRestaurant
     }
 
@@ -177,7 +193,7 @@ class MainActivityViewModel(
 
     fun onBottomAppBarLeftBtnClicked() {
         when (viewState.value) {
-            MainActivityViewState.ShowRestaurantsList -> signOut()
+            MainActivityViewState.ShowRestaurantsList -> logout()
             else -> onBackPressed()
         }
     }
@@ -188,6 +204,8 @@ class MainActivityViewModel(
             MainActivityViewState.ShowRestaurantsList ->
                 viewState.value = MainActivityViewState.ShowAddRestaurantScreen
             MainActivityViewState.ShowRestaurant -> deleteRestaurant()
+            MainActivityViewState.ShowUsersList ->
+                viewState.value = MainActivityViewState.ShowAddUserScreen
             else -> {
             }
         }
@@ -210,6 +228,8 @@ class MainActivityViewModel(
         MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_rate_review_24
         MainActivityViewState.ShowEditReviewScreen -> R.drawable.ic_baseline_mode_edit_24
         MainActivityViewState.ShowAddReviewScreen -> R.drawable.ic_baseline_send_24
+        MainActivityViewState.ShowAddUserScreen -> R.drawable.ic_baseline_person_add_alt_1_24
+        MainActivityViewState.ShowEditUserScreen -> R.drawable.ic_baseline_mode_edit_24
         MainActivityViewState.ShowAddRestaurantScreen -> R.drawable.ic_baseline_add_restaurant_24
         MainActivityViewState.ShowEditRestaurantScreen -> R.drawable.ic_baseline_mode_edit_24
         else -> R.drawable.ic_baseline_search_24
@@ -234,9 +254,32 @@ class MainActivityViewModel(
         else -> R.drawable.ic_baseline_chevron_left_24
     }
 
+    fun deleteUser() {
+        selectedUserLiveData.value?.let {
+            repository.deleteUser(it)
+
+            if (it.email == repository.getCurrentUser().email) {
+                logout()
+                return
+            }
+        }
+        viewState.value = MainActivityViewState.ShowUsersList
+    }
+
+    fun addUser(user: User) {
+        repository.addUser(user)
+        viewState.value = MainActivityViewState.ShowUsersList
+    }
+
+    fun editUser(newUser: User) {
+        val oldUser = selectedUserLiveData.value ?: return
+        repository.editUser(oldUser, newUser)
+        viewState.value = MainActivityViewState.ShowUsersList
+    }
+
 
 }
 
 interface LoginNavigator {
-    fun signOut()
+    fun logout()
 }

@@ -5,11 +5,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.alex.mainmodule.R
-import com.alex.mainmodule.presentation.fragments.AddRestaurantFragment
-import com.alex.mainmodule.presentation.fragments.AddReviewFragment
-import com.alex.mainmodule.presentation.fragments.RestaurantsListFragment
-import com.alex.mainmodule.presentation.fragments.UsersListFragment
+import com.alex.mainmodule.presentation.fragments.*
 import com.alex.mainmodule.utils.Utils.hideSystemUI
+import com.alex.mainmodule.utils.Utils.showFragment
 import kotlinx.android.synthetic.main.bottom_app_bar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
@@ -21,6 +19,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     private var usersListFragment = UsersListFragment()
     private var addReviewFragment = AddReviewFragment()
     private var addRestaurantFragment = AddRestaurantFragment()
+    private var addUserFragment = AddUserFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +36,20 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         supportFragmentManager.executePendingTransactions()
         setupAppBar()
         when (viewState) {
-            MainActivityViewState.ShowRestaurantsList -> showRestaurantsListFragment()
-            MainActivityViewState.ShowRestaurant -> showRestaurantsListFragment()
+            MainActivityViewState.ShowRestaurantsList,
+            MainActivityViewState.ShowRestaurant ->
+                showFragment(restaurantsListFragment, supportFragmentManager, true)
             MainActivityViewState.ShowEditReviewScreen,
-            MainActivityViewState.ShowAddReviewScreen -> showWriteReviewFragment()
+            MainActivityViewState.ShowAddReviewScreen ->
+                showFragment(addReviewFragment, supportFragmentManager, true)
             MainActivityViewState.ShowAddRestaurantScreen,
-            MainActivityViewState.ShowEditRestaurantScreen -> showAddRestaurantFragment()
-            MainActivityViewState.ShowUsersList -> showUsersListFragment()
+            MainActivityViewState.ShowEditRestaurantScreen ->
+                showFragment(addRestaurantFragment, supportFragmentManager)
+            MainActivityViewState.ShowAddUserScreen,
+            MainActivityViewState.ShowEditUserScreen ->
+                showFragment(addUserFragment, supportFragmentManager)
+            MainActivityViewState.ShowUsersList ->
+                showFragment(usersListFragment, supportFragmentManager)
             MainActivityViewState.ExitApp -> finishAffinity()
             MainActivityViewState.FinishActivity -> finish()
             else -> {
@@ -72,6 +78,24 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         } ?: run {
             bottomAppBarMiddleRightBtn.visibility = View.GONE
         }
+    }
+
+
+    private fun hideOtherFragments() {
+
+    }
+
+    private fun showAddUserFragment() {
+        if (addUserFragment.isAdded) {
+            supportFragmentManager.popBackStackImmediate(addUserFragment.javaClass.name, 0)
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .add(
+                R.id.mainActivityFragmentContainer,
+                addUserFragment
+            ).addToBackStack(addUserFragment.javaClass.name)
+            .commit()
     }
 
 

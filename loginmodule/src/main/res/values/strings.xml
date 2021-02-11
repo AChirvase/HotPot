@@ -13,6 +13,7 @@
     <string name="email_error">Please provide an email address</string>
     <string name="sign_up_error">Something went wrong.\nPlease try again later</string>
     <string name="password_error">Please provide a password</string>
+    <string name="user_name_error">Please provide a user name</string>
     <string name="login_error">Email or password is incorrect</string>
 
 </resources>

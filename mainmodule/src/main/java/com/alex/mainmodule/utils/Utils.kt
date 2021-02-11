@@ -5,6 +5,9 @@ import android.view.View
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.alex.mainmodule.R
 
 object Utils {
 
@@ -22,5 +25,25 @@ object Utils {
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
         }
+    }
+
+    fun showFragment(
+        fragment: Fragment,
+        fragmentManager: FragmentManager,
+        replace: Boolean = false
+    ) {
+        if (fragment.isAdded) {
+            fragmentManager.popBackStackImmediate(fragment.javaClass.name, 0)
+            return
+        }
+        val transaction = fragmentManager.beginTransaction()
+
+        if (replace) {
+            transaction.replace(R.id.mainActivityFragmentContainer, fragment)
+        } else {
+            transaction.add(R.id.mainActivityFragmentContainer, fragment)
+        }
+
+        transaction.addToBackStack(fragment.javaClass.name).commit()
     }
 }

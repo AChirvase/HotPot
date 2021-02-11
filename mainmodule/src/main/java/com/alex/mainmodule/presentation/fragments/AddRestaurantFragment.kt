@@ -21,7 +21,7 @@ class AddRestaurantFragment : Fragment(), KoinComponent {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        addOnSendReviewListener()
+        addOnAddRestaurantListener()
 
         return inflater.inflate(
             R.layout.add_restaurant_fragment,
@@ -55,7 +55,7 @@ class AddRestaurantFragment : Fragment(), KoinComponent {
         }
     }
 
-    private fun addOnSendReviewListener() {
+    private fun addOnAddRestaurantListener() {
         viewModel.viewState.observe(viewLifecycleOwner, {
             when (it) {
                 MainActivityViewState.AddRestaurant -> viewModel.addRestaurant(getRestaurant())

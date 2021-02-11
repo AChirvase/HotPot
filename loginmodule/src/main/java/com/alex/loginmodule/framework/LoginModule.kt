@@ -5,7 +5,6 @@ import com.alex.loginmodule.data.LoginRepository
 import com.alex.loginmodule.presentation.LoginActivity
 import com.alex.loginmodule.presentation.LoginActivityViewModel
 import com.alex.loginmodule.utils.Constants.LOGIN_ACTIVITY_CLASS
-import com.alex.mainmodule.framework.provideFirebaseAuth
 import com.alex.mainmodule.presentation.LoginNavigator
 import com.alex.mainmodule.utils.Constants
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -27,8 +26,8 @@ val loginModule = module {
     //Data sources
     single<LoginFirebaseDataSource> {
         LoginFirebaseDataSourceImpl(
-            provideGoogleSignInClient(androidApplication()),
-            provideFirebaseAuth()
+            get(),
+            provideGoogleSignInClient(androidApplication())
         )
     }
 

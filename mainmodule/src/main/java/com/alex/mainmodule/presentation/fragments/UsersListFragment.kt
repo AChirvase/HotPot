@@ -45,7 +45,7 @@ class UsersListFragment : Fragment(), KoinComponent {
             })
 
         usersAdapter.onItemClick = { user ->
-            viewModel.onUserClicked(user)
+            viewModel.showEditUserScreen(user)
         }
 
         specificsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -69,6 +69,8 @@ class UsersListFragment : Fragment(), KoinComponent {
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             viewHolder.userEmail.text = usersList[position].email
             viewHolder.userName.text = usersList[position].name
+            viewHolder.userRole.text = usersList[position].role
+
         }
 
         override fun getItemCount() = usersList.size
@@ -76,6 +78,7 @@ class UsersListFragment : Fragment(), KoinComponent {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var userEmail: TextView = view.userEmailTv
             var userName: TextView = view.userNameTv
+            var userRole: TextView = view.userRoleTv
 
             init {
                 view.setOnClickListener {

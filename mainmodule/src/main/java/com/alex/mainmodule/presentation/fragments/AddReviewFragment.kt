@@ -25,7 +25,7 @@ class AddReviewFragment : Fragment(), KoinComponent {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        addOnSendReviewListener()
+        addOnAddReviewListener()
 
         return inflater.inflate(
             R.layout.add_review_fragment,
@@ -83,7 +83,7 @@ class AddReviewFragment : Fragment(), KoinComponent {
         }
     }
 
-    private fun addOnSendReviewListener() {
+    private fun addOnAddReviewListener() {
         viewModel.viewState.observe(viewLifecycleOwner, {
             when (it) {
                 MainActivityViewState.AddReview -> viewModel.addReview(getReview())
