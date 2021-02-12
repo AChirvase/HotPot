@@ -55,9 +55,10 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
     }
 
     private fun setupButtons() {
-        filterRestaurantsTv.setOnClickListener {
-
+        restaurantsFilterSlider.addOnChangeListener { slider, _, _ ->
+            viewModel.filterRestaurantsByRating(slider.values[0], slider.values[1])
         }
+
     }
 
     private fun setupExpandablePageLayout() {
@@ -101,7 +102,7 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
     private fun setupAdapter(): RestaurantsListAdapter {
         val restaurantsListAdapter = RestaurantsListAdapter()
 
-        viewModel.restaurantsListLiveData.observe(viewLifecycleOwner, {
+        viewModel.filteredRestaurantsListLiveData.observe(viewLifecycleOwner, {
             numberOfRestaurantsTv.text = getString(R.string.number_of_restaurants, it.size)
             restaurantsListAdapter.restaurantsList = it as ArrayList<Restaurant>
             restaurantsListAdapter.notifyDataSetChanged()

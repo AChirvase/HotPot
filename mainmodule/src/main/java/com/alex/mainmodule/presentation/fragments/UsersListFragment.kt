@@ -38,7 +38,7 @@ class UsersListFragment : Fragment(), KoinComponent {
     private fun setupAdapter() {
         val usersAdapter = UserRecyclerAdapter()
 
-        viewModel.usersListLiveData.observe(viewLifecycleOwner,
+        viewModel.filteredUsersListLiveData.observe(viewLifecycleOwner,
             {
                 usersAdapter.usersList = it as ArrayList<User>
                 usersAdapter.notifyDataSetChanged()

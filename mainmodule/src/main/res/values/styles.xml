@@ -13,15 +13,7 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
     </style>
 
-    <style name="RoundEditText" parent="Widget.AppCompat.EditText">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/rectangle_round_corners</item>
-        <item name="android:drawablePadding">20dp</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:padding">8dp</item>
 
-    </style>
 
     <style name="IndicatorRatingBarSmall" parent="Widget.AppCompat.RatingBar.Small">
         <item name="android:progressBackgroundTint">@android:color/darker_gray</item>

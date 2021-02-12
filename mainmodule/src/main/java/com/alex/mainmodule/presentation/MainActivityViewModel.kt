@@ -9,6 +9,7 @@ import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
 import com.alex.mainmodule.domain.User
 import org.koin.core.KoinComponent
+import java.util.*
 
 
 sealed class MainActivityViewState {
@@ -27,6 +28,8 @@ sealed class MainActivityViewState {
     object EditRestaurant : MainActivityViewState()
     object EditReview : MainActivityViewState()
     object EditUser : MainActivityViewState()
+    object FocusOnSearchRestaurant : MainActivityViewState()
+    object FocusOnSearchUser : MainActivityViewState()
     object ExitApp : MainActivityViewState()
     object FinishActivity : MainActivityViewState()
 }
@@ -48,11 +51,19 @@ class MainActivityViewModel(
         }
     }
 
-    val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
+    private val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
         MutableLiveData<List<Restaurant>>()
     }
 
-    val usersListLiveData: MutableLiveData<List<User>> by lazy {
+    val filteredRestaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
+        MutableLiveData<List<Restaurant>>()
+    }
+
+    private val usersListLiveData: MutableLiveData<List<User>> by lazy {
+        MutableLiveData<List<User>>()
+    }
+
+    val filteredUsersListLiveData: MutableLiveData<List<User>> by lazy {
         MutableLiveData<List<User>>()
     }
 
@@ -69,15 +80,26 @@ class MainActivityViewModel(
     }
 
     init {
-        repository.getRestaurantsLiveData().observeForever {
-            restaurantsListLiveData.value = it.sortedBy { restaurant -> restaurant.name }.toList()
-            selectedRestaurantLiveData.value = it.find { restaurant ->
+        repository.getRestaurantsLiveData().observeForever { restaurantList ->
+            restaurantList.map { restaurant ->
+                restaurant.rating = if (restaurant.reviews.isNullOrEmpty()) {
+                    0f
+                } else {
+                    restaurant.reviews.map { review -> review.restaurantOverallEvaluation }
+                        .average().toFloat()
+                }
+            }
+            restaurantsListLiveData.value = restaurantList.sortedByDescending { it.rating }.toList()
+
+            filteredRestaurantsListLiveData.value = restaurantsListLiveData.value
+            selectedRestaurantLiveData.value = restaurantList.find { restaurant ->
                 restaurant.id == selectedRestaurantLiveData.value?.id
             }
         }
 
         repository.getUsersListLiveData().observeForever {
             usersListLiveData.value = it
+            filteredUsersListLiveData.value = usersListLiveData.value
             selectedUserLiveData.value = it.find { user ->
                 user.email == selectedUserLiveData.value?.email
             }
@@ -86,6 +108,8 @@ class MainActivityViewModel(
 
     fun onBackPressed() {
         viewState.value = when (viewState.value) {
+            MainActivityViewState.FocusOnSearchRestaurant -> MainActivityViewState.ShowRestaurantsList
+            MainActivityViewState.FocusOnSearchUser -> MainActivityViewState.ShowUsersList
             MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.ExitApp
             MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
             MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.ShowRestaurant
@@ -113,12 +137,6 @@ class MainActivityViewModel(
         viewState.value = MainActivityViewState.ShowEditUserScreen
     }
 
-    private fun addRestaurantsTest() {
-        repository.addRestaurant(Restaurant(name = "KFC"))
-        repository.addRestaurant(Restaurant(name = "MCDonald"))
-        repository.addRestaurant(Restaurant(name = "Shaworma"))
-    }
-
 
     private fun logout() {
         viewState.value = MainActivityViewState.FinishActivity
@@ -140,6 +158,8 @@ class MainActivityViewModel(
 
     fun onMainButtonClicked() {
         viewState.value = when (viewState.value) {
+            MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.FocusOnSearchRestaurant
+            MainActivityViewState.ShowUsersList -> MainActivityViewState.FocusOnSearchUser
             MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowAddReviewScreen
             MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.AddReview
             MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.AddRestaurant
@@ -212,15 +232,31 @@ class MainActivityViewModel(
 
     }
 
-    fun onBottomAppBarFarRightBtn2Clicked() {
+    fun onBottomAppBarFarRightBtnClicked() {
         when (viewState.value) {
             MainActivityViewState.ShowRestaurant -> viewState.value =
                 MainActivityViewState.ShowEditRestaurantScreen
             else -> {
                 switchBetweenUsersAndRestaurantsList()
+                filterRestaurantsByName("")
+                filterUsersByEmail("")
             }
         }
     }
+
+    fun onSearchBarTextChanged(searchSequence: String) {
+        when (viewState.value) {
+            MainActivityViewState.FocusOnSearchRestaurant,
+            MainActivityViewState.ShowRestaurantsList -> filterRestaurantsByName(searchSequence)
+            MainActivityViewState.FocusOnSearchUser,
+            MainActivityViewState.ShowUsersList -> filterUsersByEmail(searchSequence)
+            else -> {
+            }
+        }
+
+
+    }
+
 
     fun getImageForMainBtn() = when (viewState.value) {
         MainActivityViewState.ShowRestaurantsList,
@@ -277,7 +313,28 @@ class MainActivityViewModel(
         viewState.value = MainActivityViewState.ShowUsersList
     }
 
+    private fun filterRestaurantsByName(searchSequence: String) {
+        filteredRestaurantsListLiveData.value =
+            restaurantsListLiveData.value?.filter {
+                it.name.toLowerCase(Locale.getDefault())
+                    .contains(searchSequence.toLowerCase(Locale.getDefault()))
+            }
+    }
 
+    private fun filterUsersByEmail(searchSequence: String) {
+        filteredUsersListLiveData.value =
+            usersListLiveData.value?.filter {
+                it.email.toLowerCase(Locale.getDefault())
+                    .contains(searchSequence.toLowerCase(Locale.getDefault()))
+            }
+    }
+
+    fun filterRestaurantsByRating(minValue: Float, maxValue: Float) {
+        filteredRestaurantsListLiveData.value =
+            restaurantsListLiveData.value?.filter {
+                it.rating in minValue..maxValue
+            }
+    }
 }
 
 interface LoginNavigator {

@@ -1,14 +1,17 @@
 package com.alex.mainmodule.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
+import androidx.core.widget.addTextChangedListener
 import com.alex.mainmodule.R
 import com.alex.mainmodule.presentation.fragments.*
 import com.alex.mainmodule.utils.Utils.hideSystemUI
 import com.alex.mainmodule.utils.Utils.showFragment
 import kotlinx.android.synthetic.main.bottom_app_bar.*
+import kotlinx.android.synthetic.main.top_app_bar.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
@@ -34,9 +37,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     private fun updateViewState(viewState: MainActivityViewState) {
         supportFragmentManager.executePendingTransactions()
-        setupAppBar()
+        setupAppBars()
         when (viewState) {
-            MainActivityViewState.ShowRestaurantsList,
+            MainActivityViewState.ShowRestaurantsList -> {
+                showFragment(restaurantsListFragment, supportFragmentManager, true)
+                showSearchBar(focus = false, clear = false)
+            }
             MainActivityViewState.ShowRestaurant ->
                 showFragment(restaurantsListFragment, supportFragmentManager, true)
             MainActivityViewState.ShowEditReviewScreen,
@@ -48,8 +54,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             MainActivityViewState.ShowAddUserScreen,
             MainActivityViewState.ShowEditUserScreen ->
                 showFragment(addUserFragment, supportFragmentManager)
-            MainActivityViewState.ShowUsersList ->
+            MainActivityViewState.ShowUsersList -> {
                 showFragment(usersListFragment, supportFragmentManager)
+                showSearchBar(focus = false, clear = true)
+            }
+            MainActivityViewState.FocusOnSearchRestaurant ->
+                showSearchBar(focus = true, clear = true)
+            MainActivityViewState.FocusOnSearchUser ->
+                showSearchBar(focus = true, clear = true)
             MainActivityViewState.ExitApp -> finishAffinity()
             MainActivityViewState.FinishActivity -> finish()
             else -> {
@@ -57,8 +69,19 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-    private fun setupAppBar() {
+    private fun setupAppBars() {
+        setupBottomBar()
+        setupTopBar()
+    }
 
+    private fun setupTopBar() {
+        searchBar.addTextChangedListener {
+            viewModel.onSearchBarTextChanged(it.toString())
+        }
+        hideSearchBar()
+    }
+
+    private fun setupBottomBar() {
         bottomAppBarMainBtn.setImageResource(viewModel.getImageForMainBtn())
 
         bottomAppBarLeftBtn.setImageResource(viewModel.getImageForLeftBtn())
@@ -80,80 +103,22 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-
-    private fun hideOtherFragments() {
+    private fun showSearchBar(focus: Boolean, clear: Boolean) {
+        searchBar.visibility = View.VISIBLE
+        if (focus) {
+            searchBar.requestFocus()
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(searchBar, InputMethodManager.SHOW_IMPLICIT)
+        }
+        if (clear) {
+            searchBar.text.clear()
+        }
 
     }
 
-    private fun showAddUserFragment() {
-        if (addUserFragment.isAdded) {
-            supportFragmentManager.popBackStackImmediate(addUserFragment.javaClass.name, 0)
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.mainActivityFragmentContainer,
-                addUserFragment
-            ).addToBackStack(addUserFragment.javaClass.name)
-            .commit()
-    }
-
-
-    private fun showAddRestaurantFragment() {
-        if (addRestaurantFragment.isAdded) {
-            supportFragmentManager.popBackStackImmediate(addRestaurantFragment.javaClass.name, 0)
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.mainActivityFragmentContainer,
-                addRestaurantFragment
-            ).addToBackStack(addRestaurantFragment.javaClass.name)
-            .commit()
-    }
-
-    private fun showWriteReviewFragment() {
-        if (addReviewFragment.isAdded) {
-            supportFragmentManager.popBackStackImmediate(addReviewFragment.javaClass.name, 0)
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .hide(restaurantsListFragment)
-            .add(
-                R.id.mainActivityFragmentContainer,
-                addReviewFragment
-            ).addToBackStack(addReviewFragment.javaClass.name)
-            .commit()
-    }
-
-    private fun showRestaurantsListFragment() {
-        if (restaurantsListFragment.isAdded) {
-            supportFragmentManager.popBackStack(restaurantsListFragment.javaClass.name, 0)
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.mainActivityFragmentContainer,
-                restaurantsListFragment
-            ).addToBackStack(restaurantsListFragment.javaClass.name)
-            .commit()
-    }
-
-    private fun showUsersListFragment() {
-        if (usersListFragment.isAdded) {
-            supportFragmentManager.popBackStackImmediate(
-                usersListFragment.javaClass.name,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-            )
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.mainActivityFragmentContainer,
-                usersListFragment
-            )
-            .addToBackStack(usersListFragment.javaClass.name)
-            .commit()
+    private fun hideSearchBar() {
+        searchBar.visibility = View.GONE
     }
 
     override fun onBackPressed() {
@@ -177,7 +142,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             viewModel.onBottomAppBarMiddleRightBtnClicked()
         }
         bottomAppBarFarRightBtn.setOnClickListener {
-            viewModel.onBottomAppBarFarRightBtn2Clicked()
+            viewModel.onBottomAppBarFarRightBtnClicked()
         }
     }
 }
