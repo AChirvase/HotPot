@@ -45,4 +45,7 @@ class Repository(
 
     fun getCurrentUser() = localDataSource.getCurrentUser()
 
+    fun updateCurrentUserData(user: User) = user.let { localDataSource.authenticateUser(it) }
+
+    fun clearFirebaseDataSource() = firebaseDataSource.clearFirebaseDataSource()
 }

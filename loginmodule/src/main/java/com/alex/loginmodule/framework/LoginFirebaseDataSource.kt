@@ -34,7 +34,7 @@ class LoginFirebaseDataSourceImpl(
                     if (document != null) {
                         val userFromDataSource = document.toObject(User::class.java)
                         if (isPasswordCorrect(userFromDataSource?.password, user.password)) {
-                            mainFirebaseDataSource.authenticateUser(user)
+                            userFromDataSource?.let { mainFirebaseDataSource.authenticateUser(it) }
                             continuation.resume(true)
                         } else {
                             continuation.resume(false)

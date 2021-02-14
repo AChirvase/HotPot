@@ -33,6 +33,7 @@ interface MainFirebaseDataSource {
     fun getUserFromDataSource(email: String): Task<DocumentSnapshot>
     fun authenticateUser(user: User): Boolean
     fun logout(): Boolean
+    fun clearFirebaseDataSource()
 }
 
 class MainFirebaseDataSourceImpl(
@@ -58,17 +59,79 @@ class MainFirebaseDataSourceImpl(
     }
 
     override fun editUser(oldUser: User, newUser: User) {
-        if (localDataSource.getCurrentUser().email == oldUser.email) {
-            localDataSource.logout()
-            localDataSource.authenticateUser(newUser)
-        }
-
+        //password hasn't changed
         if (newUser.password.isEmpty()) {
             newUser.password = decrypt(oldUser.password)
         }
 
-        deleteUser(oldUser)
+        //the email changed
+        if (localDataSource.getCurrentUser().email == oldUser.email) {
+            localDataSource.authenticateUser(newUser)
+        }
+
         addUser(newUser)
+        if (oldUser.email != newUser.email) {
+            replaceAllOccurrencesForOldEmail(oldUser.email, newUser.email)
+            deleteUser(oldUser)
+        }
+    }
+
+    private fun replaceAllOccurrencesForOldEmail(oldEmail: String, newEmail: String) {
+        updateOwnerForRestaurants(oldEmail, newEmail)
+        updateAuthorForReviews(oldEmail, newEmail)
+    }
+
+    //WARNING! this will delete everything including current user or restaurant
+    override fun clearFirebaseDataSource() {
+        restaurantsReference
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val restaurant = document.toObject(Restaurant::class.java)
+                    deleteRestaurant(restaurant)
+                }
+            }
+
+        usersReference
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val user = document.toObject(User::class.java)
+                    deleteUser(user)
+                }
+            }
+    }
+
+    private fun updateOwnerForRestaurants(oldOwnerEmail: String, newOwnerEmail: String) {
+        restaurantsReference
+            .whereEqualTo("ownerEmail", oldOwnerEmail)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val restaurant = document.toObject(Restaurant::class.java)
+                    val newRestaurant = restaurant.copy()
+                    newRestaurant.ownerEmail = newOwnerEmail
+                    editRestaurant(restaurant, newRestaurant)
+                }
+            }
+    }
+
+    private fun updateAuthorForReviews(oldAuthorEmail: String, newAuthorEmail: String) {
+        restaurantsReference
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val restaurant = document.toObject(Restaurant::class.java)
+                    val newRestaurant = restaurant.copy()
+                    newRestaurant.reviews.forEach {
+                        if (it.userEmail == oldAuthorEmail) {
+                            it.userEmail = newAuthorEmail
+                        }
+                    }
+
+                    editRestaurant(restaurant, newRestaurant)
+                }
+            }
     }
 
     override fun getCurrentUser(): User = localDataSource.getCurrentUser()
@@ -84,6 +147,7 @@ class MainFirebaseDataSourceImpl(
 
     override fun editReview(restaurant: Restaurant, oldReview: Review, newReview: Review) {
         newReview.dateInMillis = oldReview.dateInMillis
+        newReview.userEmail = oldReview.userEmail
         restaurantsReference.document(restaurant.id)
             .update(reviewsFieldName, FieldValue.arrayRemove(oldReview))
         restaurantsReference.document(restaurant.id)
@@ -115,6 +179,5 @@ class MainFirebaseDataSourceImpl(
     override fun logout() = localDataSource.logout()
 
     override fun deleteUser(user: User) = usersReference.document(user.email).delete()
-
 
 }

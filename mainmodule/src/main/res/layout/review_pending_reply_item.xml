@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@android:color/white"
+    android:elevation="8dp"
+    android:minHeight="100dp"
+    android:padding="8dp">
+
+
+    <TextView
+        android:id="@+id/userEmailTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/darkText3"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/reviewRatingBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="user@test.com" />
+
+    <TextView
+        android:id="@+id/reviewTitleTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/darkText1"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/pendingReplyLabelTv"
+        app:layout_constraintStart_toStartOf="@id/userEmailTv"
+        app:layout_constraintTop_toBottomOf="@id/userEmailTv"
+        tools:text="Awesome experience" />
+
+    <TextView
+        android:id="@+id/reviewDescriptionTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:ellipsize="end"
+        android:maxWidth="170dp"
+        android:maxLines="3"
+        android:textColor="@color/lightText2"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/reviewRatingBar"
+        app:layout_constraintStart_toStartOf="@id/reviewTitleTv"
+        app:layout_constraintTop_toBottomOf="@id/reviewTitleTv"
+        tools:text="Spl Independentei Spl Independentei 290Spl Independentei 290 Spl Independentei 290Spl Independentei 290 290Spl Independentei 290 Spl Independentei 290Spl Independentei 290 Spl Independentei 290Spl Independentei 290" />
+
+    <TextView
+        android:id="@+id/pendingReplyLabelTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pending_reply"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="@id/reviewRatingBar"
+        app:layout_constraintTop_toBottomOf="@id/reviewRatingBar" />
+
+    <TextView
+        android:id="@+id/reviewRestaurantNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/darkText1"
+        app:layout_constraintBottom_toTopOf="@id/reviewDescriptionTv"
+        app:layout_constraintEnd_toEndOf="@id/reviewRatingBar"
+        app:layout_constraintTop_toBottomOf="@id/pendingReplyLabelTv"
+        tools:text="KFC" />
+
+    <RatingBar
+        android:id="@+id/reviewRatingBar"
+        style="@style/IndicatorRatingBarSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/userEmailTv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

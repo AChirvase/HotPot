@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         searchBar.addTextChangedListener {
             viewModel.onSearchBarTextChanged(it.toString())
         }
-        hideSearchBar()
     }
 
     private fun setupBottomBar() {
@@ -117,10 +116,6 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     }
 
-    private fun hideSearchBar() {
-        searchBar.visibility = View.GONE
-    }
-
     override fun onBackPressed() {
         viewModel.onBackPressed()
     }
@@ -144,5 +139,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         bottomAppBarFarRightBtn.setOnClickListener {
             viewModel.onBottomAppBarFarRightBtnClicked()
         }
+        createDataBaseIv.setOnClickListener {
+            viewModel.createDataBase()
+        }
+        clearDataBaseIv.setOnClickListener {
+            viewModel.clearDataBase()
+        }
+
     }
 }

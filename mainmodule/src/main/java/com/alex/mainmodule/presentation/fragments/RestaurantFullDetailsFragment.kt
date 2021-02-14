@@ -1,19 +1,18 @@
 package com.alex.mainmodule.presentation.fragments
 
-import android.icu.text.DateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.alex.mainmodule.R
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
+import com.alex.mainmodule.domain.Role
+import com.alex.mainmodule.domain.User
 import com.alex.mainmodule.presentation.MainActivityViewModel
+import com.alex.mainmodule.presentation.fragments.adapters.ReviewsAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.restaurant_details_fragment.*
 import kotlinx.android.synthetic.main.review_gravity_left.view.*
@@ -44,11 +43,18 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
 
     private fun setupRestaurantData() {
         val reviewsAdapter = ReviewsAdapter()
+
+        viewModel.usersListLiveData.observe(viewLifecycleOwner) {
+            reviewsAdapter.hasEditRights = viewModel.getUserRole() == Role.OWNER
+            reviewsAdapter.usersList = it as ArrayList<User>
+            reviewsAdapter.notifyDataSetChanged()
+        }
+
         restaurantReviewsRecyclerView.layoutManager = LinearLayoutManager(context)
         restaurantReviewsRecyclerView.adapter = reviewsAdapter
 
         reviewsAdapter.onItemClick = {
-            viewModel.showEditReviewScreen(it)
+            viewModel.onReviewClicked(it)
         }
 
         viewModel.selectedRestaurantLiveData.observe(viewLifecycleOwner) { restaurant ->
@@ -57,59 +63,31 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
             }
             updateRestaurantInfo(restaurant, reviewsAdapter)
         }
-
-
-        val imageUri = "https://i.imgur.com/n6bF2Vx.jpeg"
-        Picasso.get().load(imageUri).centerCrop().fit().into(restaurantTopContainerBackground)
-
     }
 
     private fun updateRestaurantInfo(restaurant: Restaurant, reviewsAdapter: ReviewsAdapter) {
         restaurantName.text = restaurant.name
         restaurantAddress.text = restaurant.address
         restaurantNumberOfReviews.text = restaurant.reviews.size.toString()
-        restaurantRatingBar.rating =
-            restaurant.reviews.map { it.restaurantOverallEvaluation }.average().toFloat()
+        restaurantRatingBar.rating = restaurant.rating
 
-        reviewsAdapter.reviewsList = restaurant.reviews
-        reviewsAdapter.reviewsList.sortBy { it.dateInMillis }
+        Picasso.get().load(restaurant.picture).centerCrop().fit()
+            .into(restaurantTopContainerBackground)
+
+        reviewsAdapter.reviewsList = arrangeReviews(restaurant.reviews)
         reviewsAdapter.notifyDataSetChanged()
     }
 
+    private fun arrangeReviews(reviews: ArrayList<Review>): ArrayList<Review> {
+        val result = ArrayList<Review>()
+        val highestRatedReview = reviews.maxByOrNull { it.restaurantOverallEvaluation }
+        val lowestRatedReview = reviews.minByOrNull { it.restaurantOverallEvaluation }
 
-    private class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
-        var reviewsList: ArrayList<Review> = ArrayList()
+        result.addAll(reviews.sortedByDescending { it.dateInMillis })
+        lowestRatedReview?.let { result.add(0, it) }
+        highestRatedReview?.let { result.add(0, it) }
 
-        //this is a callback
-        var onItemClick: ((Review) -> Unit)? = null
-
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.review_gravity_left, viewGroup, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.reviewRatingBar.rating = reviewsList[position].restaurantOverallEvaluation
-            viewHolder.reviewTitle.text = reviewsList[position].title
-            viewHolder.reviewVisitDate.text = DateFormat.getDateInstance(DateFormat.LONG)
-                .format(Date(reviewsList[position].visitDateInMillis))
-            viewHolder.reviewDescription.text = reviewsList[position].description
-
-        }
-
-        override fun getItemCount() = reviewsList.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var reviewRatingBar: RatingBar = view.reviewRatingBar
-            var reviewTitle: TextView = view.reviewTitle
-            var reviewVisitDate: TextView = view.reviewVisitDate
-            var reviewDescription: TextView = view.reviewDescription
-
-            init {
-                view.setOnClickListener { onItemClick?.invoke(reviewsList[adapterPosition]) }
-            }
-        }
+        return result
     }
 
 }

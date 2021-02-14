@@ -37,7 +37,6 @@ class AddRestaurantFragment : Fragment(), KoinComponent {
         if (viewModel.viewState.value == MainActivityViewState.ShowEditRestaurantScreen) {
             showEditMode()
         }
-
     }
 
     private fun showEditMode() {
@@ -47,6 +46,7 @@ class AddRestaurantFragment : Fragment(), KoinComponent {
         viewModel.selectedRestaurantLiveData.observe(viewLifecycleOwner) {
             restaurantNameTv.setText(it.name)
             restaurantAddressTv.setText(it.address)
+            restaurantOwnerEmailAddressTv.setText(it.ownerEmail)
             restaurantPhoneNumberTv.setText(it.phoneNumber)
         }
 
@@ -70,6 +70,7 @@ class AddRestaurantFragment : Fragment(), KoinComponent {
     private fun getRestaurant() = Restaurant(
         name = restaurantNameTv.text.toString(),
         address = restaurantAddressTv.text.toString(),
+        ownerEmail = restaurantOwnerEmailAddressTv.text.toString(),
         phoneNumber = restaurantPhoneNumberTv.text.toString()
     )
 }

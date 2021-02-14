@@ -5,7 +5,7 @@
     android:id="@+id/restaurantDetailsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/top_bar_height"
+    android:layout_marginTop="40dp"
     android:clipToPadding="false"
     android:fillViewport="true"
     android:paddingBottom="40dp">
@@ -48,7 +48,7 @@
 
 
         <TextView
-            android:id="@+id/restaurantDetailsTv"
+            android:id="@+id/reviewDetailsTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -74,7 +74,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/restaurantDetailsTv" />
+            app:layout_constraintTop_toBottomOf="@id/reviewDetailsTv" />
 
 
         <EditText
@@ -95,6 +95,23 @@
 
 
         <EditText
+            android:id="@+id/restaurantOwnerEmailAddressTv"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/itemBackground"
+            android:elevation="4dp"
+            android:hint="@string/owner_email_address"
+            android:inputType="textCapSentences"
+            android:maxLength="100"
+            android:paddingStart="24dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/restaurantAddressTv" />
+
+
+        <EditText
             android:id="@+id/restaurantPhoneNumberTv"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -108,7 +125,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/restaurantAddressTv" />
+            app:layout_constraintTop_toBottomOf="@id/restaurantOwnerEmailAddressTv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.alex.mainmodule.R
 import com.alex.mainmodule.domain.Review
+import com.alex.mainmodule.domain.Role
 import com.alex.mainmodule.presentation.MainActivityViewModel
 import com.alex.mainmodule.presentation.MainActivityViewState
 import kotlinx.android.synthetic.main.add_review_fragment.*
@@ -25,7 +26,7 @@ class AddReviewFragment : Fragment(), KoinComponent {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        addOnAddReviewListener()
+        subscribeForViewStateChanges()
 
         return inflater.inflate(
             R.layout.add_review_fragment,
@@ -34,31 +35,63 @@ class AddReviewFragment : Fragment(), KoinComponent {
         )
     }
 
+    private fun subscribeForViewStateChanges() {
+        viewModel.viewState.observe(viewLifecycleOwner, {
+            when (it) {
+                MainActivityViewState.AddReview -> viewModel.addReview(getReview())
+                MainActivityViewState.EditReview -> viewModel.editReview(getReview())
+                MainActivityViewState.ShowEditReviewScreen -> showEditMode()
+                else -> {
+
+                }
+            }
+        })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDatePicker()
 
-        if (viewModel.viewState.value == MainActivityViewState.ShowEditReviewScreen) {
-            showEditMode()
+        when (viewModel.getUserRole()) {
+            Role.ADMIN -> showViewsForAdmin()
+            Role.REGULAR -> showViewsForRegular()
+            Role.OWNER -> showViewsForOwner()
         }
     }
 
+    private fun showViewsForOwner() {
+        reviewGroup.visibility = View.GONE
+        replyGroup.visibility = View.VISIBLE
+    }
+
+    private fun showViewsForRegular() {
+        reviewGroup.visibility = View.VISIBLE
+        replyGroup.visibility = View.GONE
+    }
+
+    private fun showViewsForAdmin() {
+        reviewGroup.visibility = View.VISIBLE
+        replyGroup.visibility = View.VISIBLE
+    }
+
     private fun showEditMode() {
-        reviewEditModeTv.visibility = View.VISIBLE
-        deleteReviewIv.visibility = View.VISIBLE
+        editGroup.visibility = View.VISIBLE
 
         viewModel.selectedReviewLiveData.observe(viewLifecycleOwner) {
             reviewRatingBar.rating = it.restaurantOverallEvaluation
             reviewTitle.setText(it.title)
             reviewDescription.setText(it.description)
+            reviewReplyEt.setText(it.reply)
             calendar.timeInMillis = it.visitDateInMillis
             visitDateTv.text = DateFormat.getDateInstance(DateFormat.LONG)
                 .format(calendar.timeInMillis)
+            if (viewModel.getUserRole() == Role.OWNER && it.reply.isEmpty()) {
+                editGroup.visibility = View.GONE
+            }
         }
 
         deleteReviewIv.setOnClickListener {
-            viewModel.deleteReview()
+            viewModel.onDeleteBtnPressed()
         }
     }
 
@@ -79,27 +112,18 @@ class AddReviewFragment : Fragment(), KoinComponent {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
+            datePicker.datePicker.maxDate = System.currentTimeMillis()
             datePicker.show()
         }
     }
 
-    private fun addOnAddReviewListener() {
-        viewModel.viewState.observe(viewLifecycleOwner, {
-            when (it) {
-                MainActivityViewState.AddReview -> viewModel.addReview(getReview())
-                MainActivityViewState.EditReview -> viewModel.editReview(getReview())
-                else -> {
-
-                }
-            }
-        })
-    }
 
     private fun getReview() = Review(
         restaurantOverallEvaluation = reviewRatingBar.rating,
         title = reviewTitle.text.toString(),
         description = reviewDescription.text.toString(),
-        visitDateInMillis = calendar.timeInMillis
+        visitDateInMillis = calendar.timeInMillis,
+        reply = reviewReplyEt.text.toString()
     )
 
 

@@ -27,7 +27,7 @@ class LocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : Lo
         sharedPreferences.edit().remove(USER_KEY).commit()
 
     override fun getCurrentUser(): User =
-        Gson().fromJson(sharedPreferences.getString(USER_KEY, ""), User::class.java)
+        Gson().fromJson(sharedPreferences.getString(USER_KEY, ""), User::class.java) ?: User()
 
 
 }

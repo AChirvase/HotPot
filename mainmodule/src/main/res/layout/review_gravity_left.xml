@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
+    android:layout_marginBottom="8dp"
+    android:background="@android:color/white"
+    android:elevation="8dp"
     android:paddingTop="8dp">
 
 
@@ -41,12 +43,28 @@
         tools:rating="3" />
 
     <TextView
-        android:id="@+id/reviewTitle"
+        android:id="@+id/reviewTypeTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rectangle_round_corners_primary_color"
+        android:padding="4dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/reviewRatingBar"
+        tools:backgroundTint="@color/colorAccent"
+        tools:text="Best review" />
+
+    <TextView
+        android:id="@+id/reviewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
+        android:layout_marginEnd="12dp"
+        android:maxLines="2"
         android:textColor="@color/darkText1"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/reviewTypeTv"
         app:layout_constraintStart_toStartOf="@+id/reviewRatingBar"
         app:layout_constraintTop_toBottomOf="@+id/reviewRatingBar"
         tools:text="This was amazing!" />
@@ -68,11 +86,59 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="80dp"
+        android:paddingBottom="8dp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/userImgContainer"
         app:layout_constraintTop_toBottomOf="@id/reviewVisitDate"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut" />
+
+    <TextView
+        android:id="@+id/reviewReplyBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:padding="4dp"
+        android:text="@string/reply"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewDescription"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/replyTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/reply"
+        android:textColor="@color/darkText1"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewDescription" />
+
+    <TextView
+        android:id="@+id/reviewReply"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="4dp"
+        android:gravity="end"
+        android:paddingBottom="8dp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="@id/replyTitleTv"
+        app:layout_constraintStart_toStartOf="@id/reviewDescription"
+        app:layout_constraintTop_toBottomOf="@id/replyTitleTv"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/replyGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="replyTitleTv,reviewReply"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

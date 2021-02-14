@@ -89,7 +89,6 @@ class LoginActivityViewModel(
         if (!isFormValid(email, password, username)) {
             return
         }
-
         val role = Role.REGULAR
         val user = User(username, email, password, role.name)
 

@@ -10,5 +10,6 @@ data class User(
     var name: String = DEFAULT_STRING,
     var email: String = DEFAULT_STRING,
     var password: String = DEFAULT_STRING,
-    var role: String = Role.REGULAR.name
+    var role: String = Role.REGULAR.name,
+    var image: String = DEFAULT_STRING
 )

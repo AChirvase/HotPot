@@ -21,6 +21,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/createDataBaseIv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_baseline_add_to_db_24"
+        app:layout_constraintBottom_toTopOf="@id/searchBar"
+        app:layout_constraintStart_toStartOf="@id/searchBar" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/clearDataBaseIv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_baseline_delete_sweep_24"
+        app:layout_constraintBottom_toBottomOf="@id/createDataBaseIv"
+        app:layout_constraintEnd_toEndOf="@id/searchBar"
+        app:tint="@color/colorAccent" />
+
     <EditText
         android:id="@+id/searchBar"
         android:layout_width="0dp"

@@ -7,7 +7,9 @@ import com.alex.mainmodule.R
 import com.alex.mainmodule.data.Repository
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
+import com.alex.mainmodule.domain.Role
 import com.alex.mainmodule.domain.User
+import com.alex.mainmodule.utils.TestDataSourceObjects.createDataBaseTest
 import org.koin.core.KoinComponent
 import java.util.*
 
@@ -51,7 +53,7 @@ class MainActivityViewModel(
         }
     }
 
-    private val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
+    val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
         MutableLiveData<List<Restaurant>>()
     }
 
@@ -59,7 +61,7 @@ class MainActivityViewModel(
         MutableLiveData<List<Restaurant>>()
     }
 
-    private val usersListLiveData: MutableLiveData<List<User>> by lazy {
+    val usersListLiveData: MutableLiveData<List<User>> by lazy {
         MutableLiveData<List<User>>()
     }
 
@@ -81,6 +83,8 @@ class MainActivityViewModel(
 
     init {
         repository.getRestaurantsLiveData().observeForever { restaurantList ->
+
+            //calculate restaurant rating
             restaurantList.map { restaurant ->
                 restaurant.rating = if (restaurant.reviews.isNullOrEmpty()) {
                     0f
@@ -89,9 +93,12 @@ class MainActivityViewModel(
                         .average().toFloat()
                 }
             }
+
+            //sort by rating
             restaurantsListLiveData.value = restaurantList.sortedByDescending { it.rating }.toList()
 
-            filteredRestaurantsListLiveData.value = restaurantsListLiveData.value
+            filterRestaurants()
+            //update the current selected restaurant
             selectedRestaurantLiveData.value = restaurantList.find { restaurant ->
                 restaurant.id == selectedRestaurantLiveData.value?.id
             }
@@ -99,10 +106,30 @@ class MainActivityViewModel(
 
         repository.getUsersListLiveData().observeForever {
             usersListLiveData.value = it
+            filterRestaurants()
             filteredUsersListLiveData.value = usersListLiveData.value
+            it.find { user ->
+                user.email == repository.getCurrentUser().email
+            }.also { user ->
+                if (user == null) {
+                    logout()
+                } else {
+                    repository.updateCurrentUserData(user)
+                }
+            }
+
             selectedUserLiveData.value = it.find { user ->
                 user.email == selectedUserLiveData.value?.email
             }
+        }
+    }
+
+    private fun filterRestaurants() {
+        filteredRestaurantsListLiveData.value = if (getUserRole() == Role.OWNER) {
+            restaurantsListLiveData.value?.filter { it.ownerEmail == repository.getCurrentUser().email }
+                ?.toList()
+        } else {
+            restaurantsListLiveData.value?.sortedByDescending { it.rating }?.toList()
         }
     }
 
@@ -114,7 +141,12 @@ class MainActivityViewModel(
             MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
             MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.ShowRestaurant
             MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.ShowRestaurant
-            MainActivityViewState.ShowEditUserScreen -> MainActivityViewState.ShowUsersList
+            MainActivityViewState.ShowEditUserScreen -> {
+                if (getUserRole() == Role.ADMIN)
+                    MainActivityViewState.ShowUsersList
+                else
+                    MainActivityViewState.ShowRestaurantsList
+            }
             MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.ShowRestaurant
             MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.ShowRestaurantsList
             MainActivityViewState.ShowAddUserScreen -> MainActivityViewState.ShowUsersList
@@ -156,23 +188,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun onMainButtonClicked() {
-        viewState.value = when (viewState.value) {
-            MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.FocusOnSearchRestaurant
-            MainActivityViewState.ShowUsersList -> MainActivityViewState.FocusOnSearchUser
-            MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowAddReviewScreen
-            MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.AddReview
-            MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.AddRestaurant
-            MainActivityViewState.ShowAddUserScreen -> MainActivityViewState.AddUser
-            MainActivityViewState.ShowEditUserScreen -> MainActivityViewState.EditUser
-            MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.EditReview
-            MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.EditRestaurant
-            else -> viewState.value
-        }
-    }
-
-    fun showEditReviewScreen(review: Review) {
-        selectedReviewLiveData.value = review
+    private fun showEditReviewScreen() {
         viewState.value = MainActivityViewState.ShowEditReviewScreen
     }
 
@@ -186,7 +202,7 @@ class MainActivityViewModel(
         viewState.value = MainActivityViewState.ShowRestaurant
     }
 
-    fun deleteReview() {
+    private fun deleteReview() {
         val restaurant = selectedRestaurantLiveData.value
         val review = selectedReviewLiveData.value
         if (restaurant == null || review == null) {
@@ -209,6 +225,27 @@ class MainActivityViewModel(
     fun editRestaurant(newRestaurant: Restaurant) {
         selectedRestaurantLiveData.value?.let { repository.editRestaurant(it, newRestaurant) }
         viewState.value = MainActivityViewState.ShowRestaurant
+    }
+
+    fun onMainButtonClicked() {
+        viewState.value = when (viewState.value) {
+            MainActivityViewState.ShowRestaurantsList -> {
+                if (getUserRole() == Role.OWNER) {
+                    MainActivityViewState.ShowAddRestaurantScreen
+                } else {
+                    MainActivityViewState.FocusOnSearchRestaurant
+                }
+            }
+            MainActivityViewState.ShowUsersList -> MainActivityViewState.FocusOnSearchUser
+            MainActivityViewState.ShowRestaurant -> MainActivityViewState.ShowAddReviewScreen
+            MainActivityViewState.ShowAddReviewScreen -> MainActivityViewState.AddReview
+            MainActivityViewState.ShowAddRestaurantScreen -> MainActivityViewState.AddRestaurant
+            MainActivityViewState.ShowAddUserScreen -> MainActivityViewState.AddUser
+            MainActivityViewState.ShowEditUserScreen -> MainActivityViewState.EditUser
+            MainActivityViewState.ShowEditReviewScreen -> MainActivityViewState.EditReview
+            MainActivityViewState.ShowEditRestaurantScreen -> MainActivityViewState.EditRestaurant
+            else -> viewState.value
+        }
     }
 
     fun onBottomAppBarLeftBtnClicked() {
@@ -237,9 +274,13 @@ class MainActivityViewModel(
             MainActivityViewState.ShowRestaurant -> viewState.value =
                 MainActivityViewState.ShowEditRestaurantScreen
             else -> {
-                switchBetweenUsersAndRestaurantsList()
-                filterRestaurantsByName("")
-                filterUsersByEmail("")
+                if (getUserRole() == Role.ADMIN) {
+                    switchBetweenUsersAndRestaurantsList()
+                    filterRestaurantsByName("")
+                    filterUsersByEmail("")
+                } else {
+                    showEditUserScreen(repository.getCurrentUser())
+                }
             }
         }
     }
@@ -260,7 +301,13 @@ class MainActivityViewModel(
 
     fun getImageForMainBtn() = when (viewState.value) {
         MainActivityViewState.ShowRestaurantsList,
-        MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_search_24
+        MainActivityViewState.ShowUsersList -> {
+            if (getUserRole() == Role.OWNER) {
+                R.drawable.ic_baseline_add_restaurant_24
+            } else {
+                R.drawable.ic_baseline_search_24
+            }
+        }
         MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_rate_review_24
         MainActivityViewState.ShowEditReviewScreen -> R.drawable.ic_baseline_mode_edit_24
         MainActivityViewState.ShowAddReviewScreen -> R.drawable.ic_baseline_send_24
@@ -272,14 +319,25 @@ class MainActivityViewModel(
     }
 
     fun getImageForFarRightBtn() = when (viewState.value) {
-        MainActivityViewState.ShowRestaurantsList -> R.drawable.ic_baseline_groups_24
+        MainActivityViewState.ShowRestaurantsList -> {
+            if (getUserRole() == Role.ADMIN) {
+                R.drawable.ic_baseline_groups_24
+            } else {
+                R.drawable.ic_baseline_person_24
+            }
+        }
         MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_mode_edit_24
         MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_restaurant_24
         else -> null
     }
 
     fun getImageForMiddleRightBtn() = when (viewState.value) {
-        MainActivityViewState.ShowRestaurantsList -> R.drawable.ic_baseline_add_restaurant_24
+        MainActivityViewState.ShowRestaurantsList -> {
+            if (getUserRole() == Role.ADMIN)
+                R.drawable.ic_baseline_add_restaurant_24
+            else
+                null
+        }
         MainActivityViewState.ShowRestaurant -> R.drawable.ic_baseline_delete_24
         MainActivityViewState.ShowUsersList -> R.drawable.ic_baseline_person_add_alt_1_24
         else -> null
@@ -310,7 +368,11 @@ class MainActivityViewModel(
     fun editUser(newUser: User) {
         val oldUser = selectedUserLiveData.value ?: return
         repository.editUser(oldUser, newUser)
-        viewState.value = MainActivityViewState.ShowUsersList
+        viewState.value = if (getUserRole() == Role.ADMIN) {
+            MainActivityViewState.ShowUsersList
+        } else {
+            MainActivityViewState.ShowRestaurantsList
+        }
     }
 
     private fun filterRestaurantsByName(searchSequence: String) {
@@ -335,6 +397,54 @@ class MainActivityViewModel(
                 it.rating in minValue..maxValue
             }
     }
+
+    fun onDeleteBtnPressed() {
+        when (viewState.value) {
+            MainActivityViewState.ShowEditReviewScreen -> {
+                if (getUserRole() == Role.OWNER) {
+                    deleteReply()
+                } else {
+                    deleteReview()
+                }
+            }
+
+            else -> {
+            }
+        }
+
+
+    }
+
+    private fun deleteReply() {
+        val restaurant = selectedRestaurantLiveData.value
+        val oldReview = selectedReviewLiveData.value
+        if (restaurant == null || oldReview == null) {
+            return
+        }
+        var newReview = oldReview.copy()
+        newReview.reply = ""
+
+        repository.editReview(restaurant, oldReview, newReview)
+        viewState.value = MainActivityViewState.ShowRestaurant
+    }
+
+    fun getUserRole() = Role.valueOf(repository.getCurrentUser().role)
+
+    fun onReviewClicked(review: Review) {
+        selectedReviewLiveData.value = review
+        showEditReviewScreen()
+    }
+
+    fun goToAddReply(review: Review) {
+        val restaurant = restaurantsListLiveData.value?.find { it.reviews.contains(review) }
+        selectedRestaurantLiveData.value = restaurant
+        selectedReviewLiveData.value = review
+        viewState.value = MainActivityViewState.ShowEditReviewScreen
+    }
+
+    fun createDataBase() = createDataBaseTest(repository)
+    fun clearDataBase() = repository.clearFirebaseDataSource()
+
 }
 
 interface LoginNavigator {
