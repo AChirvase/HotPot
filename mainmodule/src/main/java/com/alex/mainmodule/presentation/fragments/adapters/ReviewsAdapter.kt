@@ -79,8 +79,7 @@ class ReviewsAdapter :
         val path = usersList.find { it.email == item.userEmail }?.image
         if (path.isNullOrEmpty().not()) {
             Picasso.get().load(path).centerCrop()
-                .fit()
-                .into(viewHolder.userImg)
+                .fit().into(viewHolder.userImg)
         }
     }
 

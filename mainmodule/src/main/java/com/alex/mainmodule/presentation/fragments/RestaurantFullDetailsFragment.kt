@@ -71,8 +71,10 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
         restaurantNumberOfReviews.text = restaurant.reviews.size.toString()
         restaurantRatingBar.rating = restaurant.rating
 
-        Picasso.get().load(restaurant.picture).centerCrop().fit()
-            .into(restaurantTopContainerBackground)
+        if (restaurant.picture.isEmpty().not()) {
+            Picasso.get().load(restaurant.picture).centerCrop().fit()
+                .into(restaurantTopContainerBackground)
+        }
 
         reviewsAdapter.reviewsList = arrangeReviews(restaurant.reviews)
         reviewsAdapter.notifyDataSetChanged()
@@ -80,10 +82,11 @@ class RestaurantFullDetailsFragment : Fragment(), KoinComponent {
 
     private fun arrangeReviews(reviews: ArrayList<Review>): ArrayList<Review> {
         val result = ArrayList<Review>()
-        val highestRatedReview = reviews.maxByOrNull { it.restaurantOverallEvaluation }
-        val lowestRatedReview = reviews.minByOrNull { it.restaurantOverallEvaluation }
-
         result.addAll(reviews.sortedByDescending { it.dateInMillis })
+
+        val highestRatedReview = result.maxByOrNull { it.restaurantOverallEvaluation }
+        val lowestRatedReview = result.minByOrNull { it.restaurantOverallEvaluation }
+
         lowestRatedReview?.let { result.add(0, it) }
         highestRatedReview?.let { result.add(0, it) }
 

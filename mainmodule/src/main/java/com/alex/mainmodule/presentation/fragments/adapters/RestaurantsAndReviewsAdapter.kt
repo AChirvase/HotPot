@@ -23,11 +23,12 @@ class RestaurantsAndReviewsAdapter
     }
 
     private var adapterList = ArrayList<Any>()
+
     var restaurantsList = ArrayList<Restaurant>()
     var reviewsList = ArrayList<Review>()
     var isOwner = false
 
-    //this is a callback
+    //this are callbacks
     var onRestaurantItemClick: ((Pair<Restaurant, Long>) -> Unit)? = null
     var onReviewPendingReplyItemClick: ((Review) -> Unit)? = null
 

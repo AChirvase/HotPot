@@ -102,8 +102,8 @@
             android:background="@color/itemBackground"
             android:elevation="4dp"
             android:hint="@string/owner_email_address"
-            android:inputType="textCapSentences"
             android:maxLength="100"
+
             android:paddingStart="24dp"
             android:textSize="16sp"
             android:textStyle="bold"

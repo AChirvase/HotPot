@@ -101,9 +101,10 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
         val restaurantsListAdapter = RestaurantsAndReviewsAdapter()
 
         viewModel.filteredRestaurantsListLiveData.observe(viewLifecycleOwner) {
-            onFilteredRestaurantsListChanged(it, restaurantsListAdapter)
-            onReviewsChanged(it, restaurantsListAdapter)
-
+            if (it != null) {
+                onFilteredRestaurantsListChanged(it, restaurantsListAdapter)
+                onReviewsChanged(it, restaurantsListAdapter)
+            }
         }
 
         viewModel.usersListLiveData.observe(viewLifecycleOwner) {
@@ -145,7 +146,7 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
         adapter: RestaurantsAndReviewsAdapter
     ) {
         if (restaurantsList.isNullOrEmpty().not()) {
-            restaurantsFilterSlider.setValues(0f, 5f)
+//            restaurantsFilterSlider.setValues(0f, 5f)
             val reviewsPendingReplyList = arrayListOf<Review>()
             restaurantsList.forEach { restaurant ->
                 restaurant.reviews.forEach { review ->

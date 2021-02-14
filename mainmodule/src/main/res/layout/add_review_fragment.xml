@@ -156,6 +156,24 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/reviewAuthorEt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/itemBackground"
+            android:elevation="4dp"
+            android:hint="@string/review_author"
+            android:inputType="textCapSentences"
+            android:maxLength="100"
+            android:paddingStart="24dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/visitDateContainer"
+            tools:visibility="visible" />
+
 
         <TextView
             android:id="@+id/reviewReplyTitle"
@@ -168,7 +186,7 @@
             android:textColor="@color/lightText1"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/visitDateContainer" />
+            app:layout_constraintTop_toBottomOf="@id/reviewAuthorEt" />
 
         <EditText
             android:id="@+id/reviewReplyEt"

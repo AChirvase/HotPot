@@ -104,7 +104,7 @@ class AddUserFragment : Fragment(), KoinComponent {
 
     private fun getUser() = User(
         name = userNameTv.text.toString(),
-        email = userEmailTv.text.toString(),
+        email = userEmailTv.text.toString().replace(" ", ""),
         password = userPasswordTv.text.toString(),
         role = userRole
     )

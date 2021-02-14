@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             MainActivityViewState.ShowEditUserScreen ->
                 showFragment(addUserFragment, supportFragmentManager)
             MainActivityViewState.ShowUsersList -> {
-                showFragment(usersListFragment, supportFragmentManager)
+                showFragment(usersListFragment, supportFragmentManager, true)
                 showSearchBar(focus = false, clear = true)
             }
             MainActivityViewState.FocusOnSearchRestaurant ->

@@ -6,6 +6,7 @@
     <string name="restaurant_details_indication">Restaurant details</string>
     <string name="user_details_indication">User details</string>
     <string name="review_title"><i><b>Title</b></i></string>
+    <string name="review_author"><i><b>Author</b></i></string>
     <string name="restaurant_address"><i><b>Address</b></i></string>
     <string name="owner_email_address"><i><b>Owner\'s Email Address</b></i></string>
     <string name="email"><i><b>Email</b></i></string>

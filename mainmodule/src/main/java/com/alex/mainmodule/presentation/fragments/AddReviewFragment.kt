@@ -62,16 +62,19 @@ class AddReviewFragment : Fragment(), KoinComponent {
     private fun showViewsForOwner() {
         reviewGroup.visibility = View.GONE
         replyGroup.visibility = View.VISIBLE
+        reviewAuthorEt.visibility = View.GONE
     }
 
     private fun showViewsForRegular() {
         reviewGroup.visibility = View.VISIBLE
         replyGroup.visibility = View.GONE
+        reviewAuthorEt.visibility = View.GONE
     }
 
     private fun showViewsForAdmin() {
         reviewGroup.visibility = View.VISIBLE
         replyGroup.visibility = View.VISIBLE
+        reviewAuthorEt.visibility = View.VISIBLE
     }
 
     private fun showEditMode() {
@@ -85,6 +88,8 @@ class AddReviewFragment : Fragment(), KoinComponent {
             calendar.timeInMillis = it.visitDateInMillis
             visitDateTv.text = DateFormat.getDateInstance(DateFormat.LONG)
                 .format(calendar.timeInMillis)
+            reviewAuthorEt.setText(it.userEmail)
+
             if (viewModel.getUserRole() == Role.OWNER && it.reply.isEmpty()) {
                 editGroup.visibility = View.GONE
             }
@@ -123,7 +128,8 @@ class AddReviewFragment : Fragment(), KoinComponent {
         title = reviewTitle.text.toString(),
         description = reviewDescription.text.toString(),
         visitDateInMillis = calendar.timeInMillis,
-        reply = reviewReplyEt.text.toString()
+        reply = reviewReplyEt.text.toString(),
+        userEmail = reviewAuthorEt.text.toString().replace(" ", "")
     )
 
 
