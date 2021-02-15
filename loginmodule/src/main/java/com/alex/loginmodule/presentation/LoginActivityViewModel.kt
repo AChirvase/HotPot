@@ -3,6 +3,7 @@ package com.alex.loginmodule.presentation
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alex.loginmodule.data.LoginRepository
@@ -47,7 +48,7 @@ class LoginActivityViewModel(
     }
 
     fun signInWithGoogle() {
-        viewState.value = LoginActivityViewState.SignInWithGoogle
+        Toast.makeText(context, "TO DO", Toast.LENGTH_SHORT).show()
     }
 
     fun getGoogleSignInIntent(): Intent = repository.getGoogleSignInIntent()

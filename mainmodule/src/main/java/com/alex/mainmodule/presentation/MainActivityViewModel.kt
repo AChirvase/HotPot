@@ -54,7 +54,7 @@ class MainActivityViewModel(
         }
     }
 
-    private val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
+    val restaurantsListLiveData: MutableLiveData<List<Restaurant>> by lazy {
         MutableLiveData<List<Restaurant>>()
     }
 
@@ -171,7 +171,7 @@ class MainActivityViewModel(
     }
 
 
-    private fun logout() {
+    fun logout() {
         viewState.value = MainActivityViewState.FinishActivity
         loginNavigator.logout()
     }
@@ -181,7 +181,7 @@ class MainActivityViewModel(
         viewState.value = MainActivityViewState.ShowRestaurant
     }
 
-    private fun switchBetweenUsersAndRestaurantsList() {
+    fun switchBetweenUsersAndRestaurantsList() {
         viewState.value = when (viewState.value) {
             MainActivityViewState.ShowRestaurantsList -> MainActivityViewState.ShowUsersList
             MainActivityViewState.ShowUsersList -> MainActivityViewState.ShowRestaurantsList
@@ -393,7 +393,7 @@ class MainActivityViewModel(
         }
     }
 
-    private fun isFormValid(fieldsList: ArrayList<String>) =
+    fun isFormValid(fieldsList: ArrayList<String>) =
         if (fieldsList.contains("")) {
             Toast.makeText(context, "Please fill all data", Toast.LENGTH_SHORT).show()
             false
@@ -415,7 +415,7 @@ class MainActivityViewModel(
         }
     }
 
-    private fun filterRestaurantsByName(searchSequence: String) {
+    fun filterRestaurantsByName(searchSequence: String) {
         filteredRestaurantsListLiveData.value =
             filterRestaurantsByRole()?.filter {
                 it.name.toLowerCase(Locale.getDefault())
@@ -423,7 +423,7 @@ class MainActivityViewModel(
             }
     }
 
-    private fun filterUsersByEmail(searchSequence: String) {
+    fun filterUsersByEmail(searchSequence: String) {
         filteredUsersListLiveData.value =
             usersListLiveData.value?.filter {
                 it.email.toLowerCase(Locale.getDefault())

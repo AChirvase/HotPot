@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.alex.mainmodule.R
+import com.alex.mainmodule.domain.Role
 import com.alex.mainmodule.presentation.fragments.*
 import com.alex.mainmodule.utils.Utils.hideSystemUI
 import com.alex.mainmodule.utils.Utils.showFragment
@@ -138,6 +139,13 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
         bottomAppBarFarRightBtn.setOnClickListener {
             viewModel.onBottomAppBarFarRightBtnClicked()
+        }
+
+        viewModel.usersListLiveData.observe(this) {
+            createDataBaseIv.visibility =
+                if (viewModel.getUserRole() == Role.ADMIN) View.VISIBLE else View.GONE
+            clearDataBaseIv.visibility =
+                if (viewModel.getUserRole() == Role.ADMIN) View.VISIBLE else View.GONE
         }
         createDataBaseIv.setOnClickListener {
             viewModel.createDataBase()

@@ -133,12 +133,10 @@ class RestaurantsListFragment : Fragment(), KoinComponent {
         filteredRestaurantsList: List<Restaurant>,
         adapter: RestaurantsAndReviewsAdapter
     ) {
-        if (filteredRestaurantsList.isNullOrEmpty().not()) {
-            numberOfRestaurantsTv.text =
-                getString(R.string.number_of_restaurants, filteredRestaurantsList.size)
-            adapter.restaurantsList = ArrayList(filteredRestaurantsList)
-            adapter.notifyListsChanged()
-        }
+        numberOfRestaurantsTv.text =
+            getString(R.string.number_of_restaurants, filteredRestaurantsList.size)
+        adapter.restaurantsList = ArrayList(filteredRestaurantsList)
+        adapter.notifyListsChanged()
     }
 
     private fun onReviewsChanged(
