@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.alex.loginmodule.data.LoginRepository
+import com.alex.loginmodule.data.LoginRepositoryImpl
 import com.alex.loginmodule.utils.Constants
 import com.alex.loginmodule.utils.Constants.LOGIN_TAG
 import com.alex.mainmodule.domain.Role
@@ -38,7 +38,7 @@ sealed class LoginActivityViewState {
 
 class LoginActivityViewModel(
     private val context: Context,
-    private val repository: LoginRepository
+    private val repository: LoginRepositoryImpl
 ) : ViewModel(), LoginNavigator, KoinComponent {
 
     val viewState: MutableLiveData<LoginActivityViewState> by lazy {

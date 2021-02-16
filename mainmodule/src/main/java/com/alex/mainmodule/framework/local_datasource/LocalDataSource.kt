@@ -1,17 +1,10 @@
 package com.alex.mainmodule.framework.local_datasource
 
 import android.content.SharedPreferences
+import com.alex.mainmodule.data.LocalDataSource
 import com.alex.mainmodule.domain.User
 import com.alex.mainmodule.utils.Constants.USER_KEY
 import com.google.gson.Gson
-
-
-interface LocalDataSource {
-    fun isUserAlreadyLoggedIn(): Boolean
-    fun authenticateUser(user: User): Boolean
-    fun logout(): Boolean
-    fun getCurrentUser(): User
-}
 
 class LocalDataSourceImpl(private var sharedPreferences: SharedPreferences) : LocalDataSource {
 

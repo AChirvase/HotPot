@@ -1,20 +1,13 @@
 package com.alex.loginmodule.framework
 
 import android.content.Intent
+import com.alex.loginmodule.data.LoginFirebaseDataSource
 import com.alex.mainmodule.domain.User
 import com.alex.mainmodule.framework.MainFirebaseDataSource
 import com.alex.mainmodule.utils.AESCrypt.decrypt
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
-interface LoginFirebaseDataSource {
-
-    fun getGoogleSignInIntent(): Intent
-    suspend fun signInWithEmailAndPassword(user: User): Boolean
-    suspend fun signUpWithEmailAndPassword(user: User): Boolean
-    fun logout(): Boolean
-}
 
 class LoginFirebaseDataSourceImpl(
     private var mainFirebaseDataSource: MainFirebaseDataSource,

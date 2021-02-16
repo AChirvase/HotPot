@@ -3,13 +3,13 @@ package com.alex.mainmodule.framework
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.alex.mainmodule.data.LocalDataSource
+import com.alex.mainmodule.data.RemoteDataSource
 import com.alex.mainmodule.data.Repository
 import com.alex.mainmodule.data.RepositoryImpl
-import com.alex.mainmodule.framework.local_datasource.LocalDataSource
 import com.alex.mainmodule.framework.local_datasource.LocalDataSourceImpl
 import com.alex.mainmodule.framework.remote_datasource.HotPotService
 import com.alex.mainmodule.framework.remote_datasource.NetworkResponseHandler
-import com.alex.mainmodule.framework.remote_datasource.RemoteDataSource
 import com.alex.mainmodule.framework.remote_datasource.RemoteDataSourceImpl
 import com.alex.mainmodule.presentation.MainActivityViewModel
 import com.alex.mainmodule.utils.Constants.MAIN_SHARED_PREFERENCES

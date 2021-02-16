@@ -5,8 +5,6 @@ import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
 import com.alex.mainmodule.domain.User
 import com.alex.mainmodule.framework.MainFirebaseDataSource
-import com.alex.mainmodule.framework.local_datasource.LocalDataSource
-import com.alex.mainmodule.framework.remote_datasource.RemoteDataSource
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import org.koin.core.KoinComponent

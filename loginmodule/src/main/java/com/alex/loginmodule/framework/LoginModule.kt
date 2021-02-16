@@ -1,7 +1,8 @@
 package com.alex.loginmodule.framework
 
 import android.content.Context
-import com.alex.loginmodule.data.LoginRepository
+import com.alex.loginmodule.data.LoginFirebaseDataSource
+import com.alex.loginmodule.data.LoginRepositoryImpl
 import com.alex.loginmodule.presentation.LoginActivity
 import com.alex.loginmodule.presentation.LoginActivityViewModel
 import com.alex.loginmodule.utils.Constants.LOGIN_ACTIVITY_CLASS
@@ -32,7 +33,7 @@ val loginModule = module {
     }
 
     //Repository
-    single { LoginRepository(get(), get()) }
+    single { LoginRepositoryImpl(get(), get()) }
 
     //ViewModels
     viewModel { LoginActivityViewModel(androidContext(), get()) }

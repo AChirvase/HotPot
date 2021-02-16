@@ -1,10 +1,10 @@
 package com.alex.mainmodule.framework
 
 import androidx.lifecycle.LiveData
+import com.alex.mainmodule.data.LocalDataSource
 import com.alex.mainmodule.domain.Restaurant
 import com.alex.mainmodule.domain.Review
 import com.alex.mainmodule.domain.User
-import com.alex.mainmodule.framework.local_datasource.LocalDataSource
 import com.alex.mainmodule.utils.AESCrypt
 import com.alex.mainmodule.utils.AESCrypt.decrypt
 import com.google.android.gms.tasks.Task
