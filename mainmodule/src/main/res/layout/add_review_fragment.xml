@@ -164,7 +164,7 @@
             android:background="@color/itemBackground"
             android:elevation="4dp"
             android:hint="@string/review_author"
-            android:inputType="textCapSentences"
+            android:inputType="textEmailAddress"
             android:maxLength="100"
             android:paddingStart="24dp"
             android:textSize="16sp"

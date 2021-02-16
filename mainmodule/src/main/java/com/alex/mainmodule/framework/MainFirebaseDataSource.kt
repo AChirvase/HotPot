@@ -26,7 +26,7 @@ interface MainFirebaseDataSource {
     fun editRestaurant(oldRestaurant: Restaurant, newRestaurant: Restaurant)
     fun deleteUser(user: User): Task<Void>
     fun isUserInDataSource(email: String): Boolean
-    fun addReview(review: Review, restaurant: Restaurant, userEmail: String)
+    fun addReview(review: Review, restaurant: Restaurant)
     fun editUser(oldUser: User, newUser: User): Any
     fun getCurrentUser(): User
     fun isUserAlreadyLoggedIn(): Boolean
@@ -50,9 +50,8 @@ class MainFirebaseDataSourceImpl(
     override fun getRestaurantsListLiveData() =
         restaurantsReference.livedata(Restaurant::class.java)
 
-    override fun addReview(review: Review, restaurant: Restaurant, userEmail: String) {
+    override fun addReview(review: Review, restaurant: Restaurant) {
         review.dateInMillis = System.currentTimeMillis()
-        review.userEmail = userEmail
 
         restaurantsReference.document(restaurant.id)
             .update(reviewsFieldName, FieldValue.arrayUnion(review))
@@ -164,6 +163,7 @@ class MainFirebaseDataSourceImpl(
 
     override fun editRestaurant(oldRestaurant: Restaurant, newRestaurant: Restaurant) {
         newRestaurant.reviews = oldRestaurant.reviews
+        newRestaurant.picture = oldRestaurant.picture
         restaurantsReference.document(oldRestaurant.id).set(newRestaurant)
     }
 

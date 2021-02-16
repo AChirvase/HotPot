@@ -7,9 +7,9 @@ import retrofit2.http.GET
 
 interface HotPotService {
 
-    @GET("/b/O193")
+    @GET("/b/8E0J")
     suspend fun getUsersList(): List<User>
 
-    @GET("/b/6R6S")
+    @GET("/b/8E0J")
     suspend fun getRestaurantsList(): Response<List<Restaurant>>
 }

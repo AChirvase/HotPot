@@ -129,7 +129,7 @@ class AddReviewFragment : Fragment(), KoinComponent {
         description = reviewDescription.text.toString(),
         visitDateInMillis = calendar.timeInMillis,
         reply = reviewReplyEt.text.toString(),
-        userEmail = reviewAuthorEt.text.toString().replace(" ", "")
+        userEmail = reviewAuthorEt.text.toString().replace(" ", "").toLowerCase(Locale.ROOT)
     )
 
 

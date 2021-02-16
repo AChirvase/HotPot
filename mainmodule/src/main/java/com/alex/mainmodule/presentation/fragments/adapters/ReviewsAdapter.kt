@@ -41,6 +41,7 @@ class ReviewsAdapter :
         viewHolder.reviewVisitDate.text = DateFormat.getDateInstance(DateFormat.LONG)
             .format(Date(item.visitDateInMillis))
         viewHolder.reviewDescription.text = item.description
+        viewHolder.authorEmailTv.text = item.userEmail
 
         with(viewHolder.reviewTypeTv) {
             when (position) {
@@ -96,6 +97,7 @@ class ReviewsAdapter :
         var reviewReplyBtn: TextView = view.reviewReplyBtn
         var userImg: ImageView = view.userImg
         var reviewTypeTv: TextView = view.reviewTypeTv
+        var authorEmailTv: TextView = view.authorEmailTv
 
         init {
             view.setOnClickListener { onItemClick?.invoke(reviewsList[adapterPosition]) }

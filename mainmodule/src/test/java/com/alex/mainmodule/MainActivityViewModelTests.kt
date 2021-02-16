@@ -80,28 +80,38 @@ class MainActivityViewModelTests : Application(), KoinTest {
 
     @Test
     fun switch_to_users_list_when_in_restaurants_list() {
+        //GIVEN
         viewModel.viewState.value = MainActivityViewState.ShowRestaurantsList
+        //WHEN
         viewModel.switchBetweenUsersAndRestaurantsList()
+        //THEN
         assertEquals(MainActivityViewState.ShowUsersList, viewModel.viewState.value)
+
     }
 
     @Test
     fun switch_to_restaurants_list_when_in_users_list() {
+        //GIVEN
         viewModel.viewState.value = MainActivityViewState.ShowUsersList
+        //WHEN
         viewModel.switchBetweenUsersAndRestaurantsList()
+        //THEN
         assertEquals(MainActivityViewState.ShowRestaurantsList, viewModel.viewState.value)
     }
 
     @Test
     fun state_to_show_users_list_after_delete_user() {
+        //WHEN
         viewModel.deleteUser()
+
+        //THEN
         assertEquals(MainActivityViewState.ShowUsersList, viewModel.viewState.value)
     }
 
     @Test
     fun main_activity_finish_after_delete_current_user() {
+        //GIVEN
         var user = User(email = "test@test.com")
-
         testCoroutineRule.runBlockingTest {
             doReturn(user)
                 .`when`(repository)
@@ -109,22 +119,25 @@ class MainActivityViewModelTests : Application(), KoinTest {
         }
         viewModel.selectedUserLiveData.value = user
 
+        //WHEN
         viewModel.deleteUser()
+        //THEN
         assertEquals(MainActivityViewState.FinishActivity, viewModel.viewState.value)
     }
 
     @Test
     fun filtered_restaurants_list_does_not_contain_sequence() {
-        filtered_restaurants_do_not_contain_sequence("res")
-        filtered_restaurants_do_not_contain_sequence("Res")
-        filtered_restaurants_do_not_contain_sequence("ant")
-        filtered_restaurants_do_not_contain_sequence("an")
-        filtered_restaurants_do_not_contain_sequence("1")
-        filtered_restaurants_do_not_contain_sequence(" ")
-        filtered_restaurants_do_not_contain_sequence("aur")
+        filtered_restaurants_does_not_contain_sequence("res")
+        filtered_restaurants_does_not_contain_sequence("Res")
+        filtered_restaurants_does_not_contain_sequence("ant")
+        filtered_restaurants_does_not_contain_sequence("an")
+        filtered_restaurants_does_not_contain_sequence("1")
+        filtered_restaurants_does_not_contain_sequence(" ")
+        filtered_restaurants_does_not_contain_sequence("aur")
     }
 
-    private fun filtered_restaurants_do_not_contain_sequence(sequence: String) {
+    private fun filtered_restaurants_does_not_contain_sequence(sequence: String) {
+        //GIVEN
         var restaurantsList = arrayListOf(
             Restaurant(name = "Restaurant1"),
             Restaurant(name = "Rest Aurant 2"),
@@ -139,7 +152,10 @@ class MainActivityViewModelTests : Application(), KoinTest {
         viewModel.restaurantsListLiveData.value = restaurantsList
         viewModel.filteredRestaurantsListLiveData.value = restaurantsList
 
+        //WHEN
         viewModel.filterRestaurantsByName(sequence)
+
+        //THEN
         (viewModel.filteredRestaurantsListLiveData.value as ArrayList<Restaurant>).forEach {
             assert(it.name.toLowerCase().contains(sequence.toLowerCase()))
         }

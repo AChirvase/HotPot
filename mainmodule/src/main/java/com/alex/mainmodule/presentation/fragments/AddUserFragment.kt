@@ -40,7 +40,6 @@ class AddUserFragment : Fragment(), KoinComponent {
         if (viewModel.viewState.value == MainActivityViewState.ShowEditUserScreen) {
             showEditMode()
         }
-
     }
 
     private fun showEditMode() {
@@ -48,9 +47,7 @@ class AddUserFragment : Fragment(), KoinComponent {
         deleteUserTv.visibility = View.VISIBLE
 
         viewModel.selectedUserLiveData.observe(viewLifecycleOwner) {
-            userNameTv.setText(it.name)
-            userEmailTv.setText(it.email)
-            updateSelectedUserRole(it.role)
+            onSelectedUserChanged(it)
         }
 
         deleteUserTv.setOnClickListener {
@@ -68,6 +65,13 @@ class AddUserFragment : Fragment(), KoinComponent {
         adminUserTv.setOnClickListener {
             updateSelectedUserRole(Role.ADMIN.name)
         }
+    }
+
+    private fun onSelectedUserChanged(user: User) {
+        userNameTv.setText(user.name)
+        userEmailTv.setText(user.email)
+        userPasswordTv.text.clear()
+        updateSelectedUserRole(user.role)
     }
 
     private fun updateSelectedUserRole(role: String) {

@@ -177,7 +177,12 @@ class MainActivityViewModel(
     }
 
     fun addReview(review: Review) {
-        selectedRestaurantLiveData.value?.let { repository.addReview(review, it) }
+        selectedRestaurantLiveData.value?.let {
+            if (getUserRole() != Role.ADMIN) {
+                review.userEmail = getCurrentUser().email
+            }
+            repository.addReview(review, it)
+        }
         viewState.value = MainActivityViewState.ShowRestaurant
     }
 

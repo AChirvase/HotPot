@@ -46,7 +46,7 @@ class RepositoryImpl(
     override fun getRestaurantsLiveData() = firebaseDataSource.getRestaurantsListLiveData()
 
     override fun addReview(review: Review, restaurant: Restaurant) =
-        firebaseDataSource.addReview(review, restaurant, localDataSource.getCurrentUser().email)
+        firebaseDataSource.addReview(review, restaurant)
 
     override fun getUsersListLiveData() = firebaseDataSource.getUsersListLiveData()
 
