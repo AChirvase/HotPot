@@ -40,6 +40,18 @@ class AddUserFragment : Fragment(), KoinComponent {
         if (viewModel.viewState.value == MainActivityViewState.ShowEditUserScreen) {
             showEditMode()
         }
+
+        regularUserTv.setOnClickListener {
+            updateSelectedUserRole(Role.REGULAR.name)
+        }
+
+        ownerUserTv.setOnClickListener {
+            updateSelectedUserRole(Role.OWNER.name)
+        }
+
+        adminUserTv.setOnClickListener {
+            updateSelectedUserRole(Role.ADMIN.name)
+        }
     }
 
     private fun showEditMode() {
@@ -52,18 +64,6 @@ class AddUserFragment : Fragment(), KoinComponent {
 
         deleteUserTv.setOnClickListener {
             viewModel.deleteUser()
-        }
-
-        regularUserTv.setOnClickListener {
-            updateSelectedUserRole(Role.REGULAR.name)
-        }
-
-        ownerUserTv.setOnClickListener {
-            updateSelectedUserRole(Role.OWNER.name)
-        }
-
-        adminUserTv.setOnClickListener {
-            updateSelectedUserRole(Role.ADMIN.name)
         }
     }
 

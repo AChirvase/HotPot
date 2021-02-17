@@ -146,7 +146,9 @@ class MainFirebaseDataSourceImpl(
 
     override fun editReview(restaurant: Restaurant, oldReview: Review, newReview: Review) {
         newReview.dateInMillis = oldReview.dateInMillis
-        newReview.userEmail = oldReview.userEmail
+        if (newReview.userEmail.isEmpty()) {
+            newReview.userEmail = oldReview.userEmail
+        }
         restaurantsReference.document(restaurant.id)
             .update(reviewsFieldName, FieldValue.arrayRemove(oldReview))
         restaurantsReference.document(restaurant.id)
